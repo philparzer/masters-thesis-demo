@@ -1,4 +1,4 @@
-import AnnotationTextArea from "@/components/annotation-text-area";
+import AnnotationPlayground from "../components/annotation-playground";
 
 export default function Home() {
   return (
@@ -26,7 +26,7 @@ export default function Home() {
         </span>{" "}
         The system outlined uses GPT-4's function-calling API.
       </p>
-      <AnnotationTextArea />
+      <AnnotationPlayground />
       <section className="mt-20 text-center">
         <h2 className="text-2xl font-semibold mb-4">Examples</h2>
         <p className="text-justify">
