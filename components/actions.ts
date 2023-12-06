@@ -10,6 +10,7 @@ export async function analyzeText(prevState: any, formData: FormData) {
     console.log(content)
 
     //TODO: call openai api here
+    //TODO: save results in DB
 
     await new Promise(resolve => setTimeout(resolve, 2000))
     revalidatePath('/')
