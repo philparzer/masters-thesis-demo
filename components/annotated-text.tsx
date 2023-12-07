@@ -74,11 +74,13 @@ export default function AnnotatedText({ text, sections }: AnnotatedTextProps) {
 
       // Add the highlighted phrase with a tooltip containing its description
       parts.push(
+        
         <AnnotationPopover
           key={"highlight-" + index}
           description={occ.description}
           phrase={occ.phrase}
         />
+
       );
 
       // Update the index to the end of the current occurrence
@@ -91,5 +93,5 @@ export default function AnnotatedText({ text, sections }: AnnotatedTextProps) {
     return parts;
   };
 
-  return <div>{getHighlightedText()}</div>;
+  return <div className="">{getHighlightedText()}</div>;
 }

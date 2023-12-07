@@ -104,7 +104,7 @@ const AnnotationPlayground = () => {
     >
       <div className="relative w-full  rounded-xl border p-10 pt-20 pb-10 flex bg-white">
         {/*border svgs*/}
-        <div className="absolute p-10 pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between cursor- z-10">
+        <div className="absolute p-10 pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10">
           <div
             className={`w-full relative ${
               textAreaFocused ? "opacity-100" : "opacity-50"
