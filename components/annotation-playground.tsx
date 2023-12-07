@@ -4,6 +4,36 @@ import { analyzeText } from "@/components/actions";
 import { useEffect, useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import AnnotatedText from "./annotated-text";
+import { modelSchema, models } from "@/lib/types";
+import {
+  defaultFunctionCallDescription,
+  defaultSystemPrompt,
+  defaultTemperature,
+} from "@/lib/api-data";
+import { toast } from "sonner";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface SubmitButtonInterface {
   content: string;
@@ -19,14 +49,16 @@ const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
   }, [pending]);
   return (
     <div className="flex gap-4 items-center">
-      {content.length > maxCharCount ? 
-        <div className=" text-red-600 text-sm">too many characters; {content.length} {">"} {maxCharCount}</div>
-      : null }
-       
+      {content.length > maxCharCount ? (
+        <div className=" text-red-600 text-sm">
+          too many characters; {content.length} {">"} {maxCharCount}
+        </div>
+      ) : null}
+
       <button
         className={` ${
           content.length > 0 && content.length <= maxCharCount && !pending
-            ? "group hover:bg-white hover:text-black"
+            ? "group hover:bg-white hover:text-black focus:outline-red-500"
             : !pending
             ? "opacity-10"
             : "bg-transparent text-black border-none"
@@ -84,16 +116,62 @@ const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
 };
 
 const AnnotationPlayground = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [textAreaFocused, setTextAreaFocused] = useState(false);
   const [content, setContent] = useState("");
-  const [state, formAction] = useFormState(analyzeText, { message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [formState, setFormState] =
     useState<{ phrase: string; description: string }[]>();
+  const [model, setModel] = useState<models>(
+    modelSchema.safeParse(searchParams.get("model")).success
+      ? (searchParams.get("model") as models)
+      : "gpt-4-0613"
+  );
+
+  const [state, formAction] = useFormState(analyzeText, { message: "" });
+
+  const updateSearchQuery = (updatedQuery: { [key: string]: string }) => {
+    const params = new URLSearchParams(searchParams);
+    Object.keys(updatedQuery).forEach((key) => {
+      if (updatedQuery[key]) {
+        params.set(key, updatedQuery[key]);
+      } else {
+        params.delete(key);
+      }
+    });
+    const queryString = params.toString();
+    const updatedPath = queryString ? `${pathname}?${queryString}` : pathname;
+    router.replace(updatedPath, { scroll: false });
+  };
 
   useEffect(() => {
-    setFormState(state.sections);
+    console.log("updating search params");
+    if (searchParams.has("model")) {
+      if (searchParams.get("model") === model) {
+        return;
+      }
+    }
+    updateSearchQuery({ model: model });
+  }, [model]);
+
+  useEffect(() => {
+    console.log(state.message);
+
+    if (state) {
+      if (state.sections && state.sections.length > 0) {
+        setFormState(state.sections);
+      }
+
+      if (state.type && state.type === "error") {
+        console.log("error er");
+        toast.error(state.message);
+      }
+    }
+
+    //TODO: error handline
   }, [state]);
 
   return (
@@ -113,6 +191,7 @@ const AnnotationPlayground = () => {
             <svg
               width="8"
               height="8"
+              className={`${isLoading ? "animate-pulse" : ""}`}
               viewBox="0 0 72 71"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +213,9 @@ const AnnotationPlayground = () => {
               />
             </svg>
             <svg
-              className="right-0 absolute top-0 scale-x-[-1]"
+              className={`right-0 absolute top-0 scale-x-[-1] ${
+                isLoading ? "animate-pulse" : ""
+              }`}
               width="8"
               height="8"
               viewBox="0 0 72 71"
@@ -158,7 +239,9 @@ const AnnotationPlayground = () => {
               />
             </svg>
             <svg
-              className="bottom-0 absolute scale-y-[-1]"
+              className={`bottom-0 absolute scale-y-[-1] ${
+                isLoading ? "animate-pulse" : ""
+              }`}
               width="8"
               height="8"
               viewBox="0 0 72 71"
@@ -182,7 +265,9 @@ const AnnotationPlayground = () => {
               />
             </svg>
             <svg
-              className="bottom-0 right-0 absolute scale-y-[-1] scale-x-[-1]"
+              className={`bottom-0 right-0 absolute scale-y-[-1] scale-x-[-1] ${
+                isLoading ? "animate-pulse" : ""
+              }`}
               width="8"
               height="8"
               viewBox="0 0 72 71"
@@ -215,23 +300,33 @@ const AnnotationPlayground = () => {
             <AnnotatedText text={content} sections={state.sections || []} />
           </div>
         ) : (
-          <textarea
-            name="text"
-            required
-            onFocus={() => setTextAreaFocused(true)}
-            onBlur={() => setTextAreaFocused(false)}
-            className={`resize-none w-full h-[80vh] placeholder:font-mono max-h-[500px]  p-4 placeholder:font-medium placeholder:opacity-50 focus:placeholder:opacity-100 placeholder:text-black focus:outline-none placeholder:text-lg ${
-              isLoading ? "animate-pulse" : ""
-            }`}
-            autoFocus
-            placeholder="Paste a page"
-            content={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
+          <>
+            <textarea
+              name="text"
+              required
+              onFocus={() => setTextAreaFocused(true)}
+              onBlur={() => setTextAreaFocused(false)}
+              className={`resize-none w-full h-[80vh] placeholder:font-mono max-h-[500px]  p-4 placeholder:font-medium placeholder:opacity-50 focus:placeholder:opacity-100 placeholder:text-black focus:outline-none placeholder:text-lg ${
+                isLoading ? "animate-pulse" : ""
+              }`}
+              autoFocus
+              placeholder="Paste a page"
+              content={content}
+              onChange={(e) => setContent(e.target.value)}
+            ></textarea>
+            <input
+              readOnly
+              className="hidden pointer-events-none"
+              name="model"
+              value={model}
+            ></input>
+          </>
         )}
 
         <div className="absolute flex w-full border-b left-0 justify-between top-0  p-4 h-14 text-sm z-0 items-center">
-          <h2 className="opacity-50 py-1">Text Analysis Playground</h2>
+          <div className="flex gap-10 items-center">
+            <h2 className="opacity-50 py-1">Text Analysis Playground</h2>
+          </div>
           {/*submit button or trash button*/}
           {formState ? ( //if form is submitted + annotation is shown
             <div className="flex gap-2">
@@ -269,6 +364,7 @@ const AnnotationPlayground = () => {
                   </svg>
                 </span>
               </button>
+
               <button
                 className="text-white bg-red-600 rounded-md  px-4 py-1 pr-3 transition-colors    hover:bg-red-500"
                 onClick={(e) => {
@@ -294,7 +390,99 @@ const AnnotationPlayground = () => {
               </button>
             </div>
           ) : (
-            <div className="text-base relative">
+            <div className="text-base relative flex gap-4">
+              {!isLoading ? (
+                <div className="flex gap-4">
+                  <div>
+                    <Select
+                      value={model}
+                      onValueChange={(value) => setModel(value as models)}
+                    >
+                      <SelectTrigger className="">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent
+                        defaultValue="gpt-4-0613"
+                        className="pb-3 pt-1"
+                      >
+                        <SelectGroup>
+                          <SelectLabel>
+                            <div className="opacity-50 text-xs mt-1 font-medium translate-y-1">
+                              Stable Models
+                            </div>
+                          </SelectLabel>
+                          <SelectItem value="gpt-4-0613">GPT-4 0631</SelectItem>
+                          <SelectItem value="gpt-3.5-turbo-1106">
+                            GPT-3.5 Turbo 1106
+                          </SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                          <SelectLabel>
+                            <div className="opacity-50 mt-1 text-xs font-medium translate-y-1">
+                              Preview Models
+                            </div>
+                          </SelectLabel>
+                          <SelectItem value="gpt-4-1106-preview">
+                            GPT-4 Turbo 1106
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {/* 
+                  TODO: implement this whenever
+                  <Sheet>
+                    <SheetTrigger className="border rounded-md px-4 py-1 text-sm focus:outline outline-2 focus:outline-black">
+                      settings
+                    </SheetTrigger>
+                    <SheetContent>
+                      <SheetHeader>
+                        <SheetTitle>Settings</SheetTitle>
+                        <SheetDescription>
+                          Check our defaults and change them if you want
+                        </SheetDescription>
+                      </SheetHeader>
+
+                      +
+                      <div className="mt-10">
+                        <label className="text-sm pb-2 block opacity-50">
+                          Function Description
+                        </label>
+                        <textarea
+                          className="w-full h-40 border rounded-md focus:outline-black p-4"
+                          defaultValue={defaultFunctionCallDescription}
+                        ></textarea>
+                      </div>
+                      <div className="mt-10 flex flex-col">
+                        <label className="text-sm pb-2 block opacity-50">
+                          Temperature
+                        </label>
+                        <input
+                          type={"number"}
+                          className="w-20 border rounded-md py-2 px-4 focus:outline-black"
+                          step={0.1}
+                          max={1}
+                          min={0}
+                          defaultValue={defaultTemperature}
+                        ></input>
+                      </div>
+                      <div className="mt-10 flex flex-col">
+                        <label className="text-sm pb-2 block opacity-50">
+                          Seed
+                        </label>
+                        <input
+                          type="number"
+                          name="seed"
+                          placeholder="optional"
+                          className="bg-white border px-2 w-full rounded-md py-1.5 focus:outline-black"
+                          step={1}
+                        />
+                      </div>
+                    </SheetContent>
+                  </Sheet> 
+                  */}
+                </div>
+              ) : null}
               <SubmitButton content={content} setIsLoading={setIsLoading} />
             </div>
           )}

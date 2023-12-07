@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { Toaster } from "sonner"
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} bg-slate-50 bg-opacity-50`}>
-      <body className="flex flex-col items-center p-24" >{children}</body>
+      <body className="flex flex-col items-center p-24" ><Toaster richColors closeButton duration={15000}/>{children}</body>
     </html>
   )
 }
