@@ -26,18 +26,18 @@ const AnnotationPopover = ({ phrase, description }: AnnotationPopoverProps) => {
   return (
     <span className="cursor-pointer" ref={ref}>
     <Popover onOpenChange={() => setIsHighlighted(!isHighlighted)} open={isOpen}>
-      {isOpen ? <PopoverAnchor className="inline-block relative translate-y-2"/> : null}
+      {isOpen ? <PopoverAnchor className="inline relative translate-y-1"/> : null}
       <span className="group" onClick={() => {console.log("opening"); setIsOpen(true)}}>
         <span className="">
           <span className="relative">
-          <span className={`relative z-10  px-0.5 bg-red-100 ${
-              isOpen ? "!bg-red-300" : ""
+          <span className={`relative z-10  px-0.5 bg-amber-100/60 hover:bg-yellow-200 dark:hover:bg-indigo-500 dark:bg-indigo-800  ${
+              isOpen ? "!bg-yellow-200 dark:!bg-indigo-500" : ""
             }`}>{phrase}</span>
         </span>
         </span>
         </span>
 
-      <PopoverContent><div className="bg-red-50/100 w-72 border-red-200 rounded-md border-2 p-4 ">{description}</div></PopoverContent>
+      <PopoverContent align="start"><div className="bg-[#FFFEF9] w-72 border border-amber-100 dark:border-indigo-900 dark:bg-zinc-900 dark:text-white rounded-md p-4 ">{description}</div></PopoverContent>
     </Popover>
 
     </span>

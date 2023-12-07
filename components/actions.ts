@@ -31,10 +31,10 @@ export async function analyzeText(prevState: any, formData: FormData) {
 
   if (!isValidModelChoice.success) {
     console.log("error in model choice");
-    return {
+    return ({
       message: "Invalid model choice. Your query parameters are invalid.",
       type: "error",
-    };
+    });
   }
 
   try {
@@ -117,7 +117,7 @@ export async function analyzeText(prevState: any, formData: FormData) {
 
     revalidatePath("/");
     //TODO: check validity of response json choices[0]
-    return json;
+    return {jsonToSave: completion, data: json };
   } catch (e) {
     console.log("error", e);
     return { message: "Failed to create", type: "error" };

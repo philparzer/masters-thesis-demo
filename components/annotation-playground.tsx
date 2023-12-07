@@ -58,11 +58,11 @@ const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
       <button
         className={` ${
           content.length > 0 && content.length <= maxCharCount && !pending
-            ? "group hover:bg-white hover:text-black focus:outline-red-500"
+            ? "group hover:bg-opacity-80 dark:bg-zinc-900 focus:outline-red-500"
             : !pending
             ? "opacity-10"
-            : "bg-transparent text-black border-none"
-        } left-0 top-0 flex  items-center gap-2 rounded-md text-white px-4 py-1 bg-black border pr-3 transition-colors  border-black`}
+            : "bg-transparent text-black "
+        } left-0 top-0 flex  items-center gap-2 rounded-md text-white dark:bg-white dark:text-black px-4 py-1 bg-black border pr-3 transition-colors  border-black`}
         disabled={content.length === 0 || pending}
         title={
           content.length === 0
@@ -74,12 +74,12 @@ const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
         type="submit"
       >
         {pending ? (
-          <span className=" flex items-center gap-2">
+          <span className=" flex items-center gap-2 text-black">
             <span className="opacity-50">analyzing</span>
             <span role="status" className="inline-block">
               <svg
                 aria-hidden="true"
-                className="w-[14px] h-[14px] text-slate-100 animate-spin  fill-black"
+                className="w-[14px] h-[14px] text-zinc-100 animate-spin  fill-black"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +105,7 @@ const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
             height="18"
             viewBox="0 -960 960 960"
             width="18"
-            className="fill-white group-hover:fill-black transition-colors "
+            className="fill-white dark:fill-black group-hover:opacity-80 transition-colors "
           >
             <path d="M450-420q38 0 64-26t26-64q0-38-26-64t-64-26q-38 0-64 26t-26 64q0 38 26 64t64 26Zm193 160L538-365q-20 13-42.5 19t-45.5 6q-71 0-120.5-49.5T280-510q0-71 49.5-120.5T450-680q71 0 120.5 49.5T620-510q0 23-6.5 45.5T594-422l106 106-57 56ZM200-120q-33 0-56.5-23.5T120-200v-160h80v160h160v80H200Zm400 0v-80h160v-160h80v160q0 33-23.5 56.5T760-120H600ZM120-600v-160q0-33 23.5-56.5T200-840h160v80H200v160h-80Zm640 0v-160H600v-80h160q33 0 56.5 23.5T840-760v160h-80Z" />
           </svg>
@@ -131,7 +131,7 @@ const AnnotationPlayground = () => {
       : "gpt-4-0613"
   );
 
-  const [state, formAction] = useFormState(analyzeText, { message: "" });
+  const [state, formAction] = useFormState(analyzeText, { message: "", type: "" });
 
   const updateSearchQuery = (updatedQuery: { [key: string]: string }) => {
     const params = new URLSearchParams(searchParams);
@@ -161,8 +161,9 @@ const AnnotationPlayground = () => {
     console.log(state.message);
 
     if (state) {
-      if (state.sections && state.sections.length > 0) {
-        setFormState(state.sections);
+      if (state.data) {
+      if (state.data.sections && state.data.sections.length > 0) {
+        setFormState(state.data.sections);
       }
 
       if (state.type && state.type === "error") {
@@ -170,6 +171,7 @@ const AnnotationPlayground = () => {
         toast.error(state.message);
       }
     }
+  }
 
     //TODO: error handline
   }, [state]);
@@ -180,9 +182,9 @@ const AnnotationPlayground = () => {
       className="flex w-full max-w-[1000px] relative"
       action={formAction}
     >
-      <div className="relative w-full  rounded-xl border p-10 pt-20 pb-10 flex bg-white">
+      <div className="relative w-full  rounded-xl border p-10 pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
         {/*border svgs*/}
-        <div className="absolute p-10 pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10">
+        <div className="absolute p-10 pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10 d">
           <div
             className={`w-full relative ${
               textAreaFocused ? "opacity-100" : "opacity-50"
@@ -191,7 +193,7 @@ const AnnotationPlayground = () => {
             <svg
               width="8"
               height="8"
-              className={`${isLoading ? "animate-pulse" : ""}`}
+              className={` dark:stroke-white ${isLoading ? "animate-pulse" : ""}`}
               viewBox="0 0 72 71"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -201,7 +203,7 @@ const AnnotationPlayground = () => {
                 y="0.539673"
                 width="70.2224"
                 height="10.686"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
               <rect
                 x="11.5607"
@@ -209,7 +211,7 @@ const AnnotationPlayground = () => {
                 width="70.2224"
                 height="10.686"
                 transform="rotate(90 11.5607 0.539673)"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
             </svg>
             <svg
@@ -227,7 +229,7 @@ const AnnotationPlayground = () => {
                 y="0.539673"
                 width="70.2224"
                 height="10.686"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
               <rect
                 x="11.5607"
@@ -235,7 +237,7 @@ const AnnotationPlayground = () => {
                 width="70.2224"
                 height="10.686"
                 transform="rotate(90 11.5607 0.539673)"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
             </svg>
             <svg
@@ -253,7 +255,7 @@ const AnnotationPlayground = () => {
                 y="0.539673"
                 width="70.2224"
                 height="10.686"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
               <rect
                 x="11.5607"
@@ -261,7 +263,7 @@ const AnnotationPlayground = () => {
                 width="70.2224"
                 height="10.686"
                 transform="rotate(90 11.5607 0.539673)"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
             </svg>
             <svg
@@ -279,7 +281,7 @@ const AnnotationPlayground = () => {
                 y="0.539673"
                 width="70.2224"
                 height="10.686"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
               <rect
                 x="11.5607"
@@ -287,7 +289,7 @@ const AnnotationPlayground = () => {
                 width="70.2224"
                 height="10.686"
                 transform="rotate(90 11.5607 0.539673)"
-                fill="black"
+                className="dark:fill-white fill-black"
               />
             </svg>
           </div>
@@ -297,7 +299,7 @@ const AnnotationPlayground = () => {
           <div
             className={`  w-full h-[80vh] max-h-[500px]  p-4 placeholder:font-medium`}
           >
-            <AnnotatedText text={content} sections={state.sections || []} />
+            <AnnotatedText text={content} sections={state.data.sections || []} />
           </div>
         ) : (
           <>
@@ -306,7 +308,7 @@ const AnnotationPlayground = () => {
               required
               onFocus={() => setTextAreaFocused(true)}
               onBlur={() => setTextAreaFocused(false)}
-              className={`resize-none w-full h-[80vh] placeholder:font-mono max-h-[500px]  p-4 placeholder:font-medium placeholder:opacity-50 focus:placeholder:opacity-100 placeholder:text-black focus:outline-none placeholder:text-lg ${
+              className={`resize-none w-full dark:text-white placeholder:dark:text-zinc-100 dark:bg-zinc-900 h-[80vh] placeholder:font-mono max-h-[500px]  p-4 placeholder:font-medium placeholder:opacity-50 focus:placeholder:opacity-100 placeholder:text-black focus:outline-none placeholder:text-lg ${
                 isLoading ? "animate-pulse" : ""
               }`}
               autoFocus
@@ -323,20 +325,20 @@ const AnnotationPlayground = () => {
           </>
         )}
 
-        <div className="absolute flex w-full border-b left-0 justify-between top-0  p-4 h-14 text-sm z-0 items-center">
+        <div className="absolute flex w-full border-b dark:border-zinc-600 left-0 justify-between top-0  p-4 h-14 text-sm z-0 items-center">
           <div className="flex gap-10 items-center">
             <h2 className="opacity-50 py-1">Text Analysis Playground</h2>
           </div>
           {/*submit button or trash button*/}
           {formState ? ( //if form is submitted + annotation is shown
-            <div className="flex gap-2">
+            <div className="flex gap-5">
               <button
-                className="text-black  rounded-md underline opacity-50 underline-offset-2 decoration-2 decoration-black/50 hover:opacity-100"
+                className="text-black  rounded-md underline opacity-50 underline-offset-2 decoration-2 decoration-black/50 dark:decoration-white/50 hover:opacity-100"
                 onClick={(e) => {
                   e.preventDefault();
                   const outputObj = {
                     text: content,
-                    ...state.sections,
+                    ...state.jsonToSave,
                   };
                   const dataStr = JSON.stringify(outputObj, null, 2); // Convert to JSON string with pretty print
                   const blob = new Blob([dataStr], {
@@ -350,23 +352,14 @@ const AnnotationPlayground = () => {
                   URL.revokeObjectURL(url); // Clean up
                 }}
               >
-                <span className="flex items-center gap-1.5 ">
+                <span className="flex items-center gap-1.5 dark:text-zinc-100">
                   {" "}
                   download JSON
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="18"
-                    viewBox="0 -960 960 960"
-                    width="18"
-                    className="fill-white"
-                  >
-                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
-                  </svg>
                 </span>
               </button>
 
               <button
-                className="text-white bg-red-600 rounded-md  px-4 py-1 pr-3 transition-colors    hover:bg-red-500"
+                className="text-white bg-red-600 rounded-md  px-4 py-1 pr-3 transition-colors  hover:bg-red-500"
                 onClick={(e) => {
                   e.preventDefault();
                   setContent("");
@@ -374,7 +367,7 @@ const AnnotationPlayground = () => {
                   setFormState(undefined);
                 }}
               >
-                <span className="flex items-center gap-1.5 ">
+                <span className="flex items-center gap-1.5 py-0.5 ">
                   {" "}
                   try another text{" "}
                   <svg
@@ -429,27 +422,34 @@ const AnnotationPlayground = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  {/* 
-                  TODO: implement this whenever
+                  
                   <Sheet>
-                    <SheetTrigger className="border rounded-md px-4 py-1 text-sm focus:outline outline-2 focus:outline-black">
+                    <SheetTrigger className="border rounded-md px-4 py-1 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
                       settings
                     </SheetTrigger>
-                    <SheetContent>
+                    <SheetContent className="dark:text-white">
                       <SheetHeader>
-                        <SheetTitle>Settings</SheetTitle>
-                        <SheetDescription>
+                        <SheetTitle className="dark:text-zinc-100">Settings</SheetTitle>
+                        <SheetDescription className="dark:text-zinc-100/50">
                           Check our defaults and change them if you want
                         </SheetDescription>
                       </SheetHeader>
 
-                      +
+                      <div className="mt-10">
+                        <label className="text-sm pb-2 block opacity-50">
+                          System Prompt
+                        </label>
+                        <textarea
+                          className="w-full h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
+                          defaultValue={defaultSystemPrompt}
+                        ></textarea>
+                      </div>
                       <div className="mt-10">
                         <label className="text-sm pb-2 block opacity-50">
                           Function Description
                         </label>
                         <textarea
-                          className="w-full h-40 border rounded-md focus:outline-black p-4"
+                          className="w-full h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
                           defaultValue={defaultFunctionCallDescription}
                         ></textarea>
                       </div>
@@ -459,7 +459,7 @@ const AnnotationPlayground = () => {
                         </label>
                         <input
                           type={"number"}
-                          className="w-20 border rounded-md py-2 px-4 focus:outline-black"
+                          className="w-20 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 py-2 px-4 focus:outline-black"
                           step={0.1}
                           max={1}
                           min={0}
@@ -474,13 +474,13 @@ const AnnotationPlayground = () => {
                           type="number"
                           name="seed"
                           placeholder="optional"
-                          className="bg-white border px-2 w-full rounded-md py-1.5 focus:outline-black"
+                          className="bg-white dark:bg-zinc-900 border dark:border-zinc-600 px-2 w-full rounded-md py-1.5 focus:outline-black"
                           step={1}
                         />
                       </div>
                     </SheetContent>
                   </Sheet> 
-                  */}
+                  
                 </div>
               ) : null}
               <SubmitButton content={content} setIsLoading={setIsLoading} />
