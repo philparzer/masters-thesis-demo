@@ -7,12 +7,17 @@ export default function Home() {
         <h1 className="text-4xl font-semibold leading-[1.3em]">
           LLM-based Text Analysis for <br></br> Translation of Literary Texts
         </h1>
+       
         <h3 className="mt-3 text-xl">
           <span className="block">University of Innsbruck</span>
           <span className="block">Philipp Parzer</span>
         </h3>
+        <div className="flex gap-4 mt-4 justify-center">
+          <a href="https://github.com" className="underline opacity-50 transition-opacity hover:opacity-100">github repository</a>
+          <a href="https://github.com" className="underline opacity-50 transition-opacity hover:opacity-100 ">download paper</a>
+        </div>
       </section>
-      <p className="my-12 text-center">
+      <p className="mt-8 mb-12 text-center">
         This paper introduces a novel enhancement of human-in-the-loop literary
         translation processes by including large language models (LLMs).{" "}
         <span className="bg-black/10 font-medium px-1 rounded-sm">

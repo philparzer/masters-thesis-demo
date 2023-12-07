@@ -72,9 +72,11 @@ export async function analyzeText(prevState: any, formData: FormData) {
       : false;
 
     //TODO: save results in DB
-    console.log("\n\n\nTODO SAVE THIS IN DB")
-    console.log(completion)
-    console.log("and save Seed", inputSeed)
+    // console.log("\n\n\nTODO SAVE THIS IN DB")
+    // console.log(completion)
+
+    //TODO: when seed is fixed, save seed in DB
+    // console.log("and save Seed", inputSeed)
 
     if (!isValidFunctionCall) {
       //if gpt didnt return a valid function call

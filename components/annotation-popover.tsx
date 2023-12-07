@@ -37,7 +37,7 @@ const AnnotationPopover = ({ phrase, description }: AnnotationPopoverProps) => {
         </span>
         </span>
 
-      <PopoverContent><div className="bg-red-50/100 w-72 border-red-200 border-2 p-4 ">{description}</div></PopoverContent>
+      <PopoverContent><div className="bg-red-50/100 w-72 border-red-200 rounded-md border-2 p-4 ">{description}</div></PopoverContent>
     </Popover>
 
     </span>
