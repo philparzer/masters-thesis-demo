@@ -11,7 +11,7 @@ const Header = ({}: HeaderProps) => {
         </h1>
 
         <h3 className="mt-3 text-md font-medium dark:text-white">
-        <span className="block">Master's Thesis</span>
+        <span className="block">Master&apos;s Thesis</span>
           <span className="block">University of Innsbruck</span>
           <span className="block">Philipp Parzer</span>
         </h3>
