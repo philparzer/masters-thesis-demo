@@ -8,13 +8,13 @@ export default function LoginForm() {
 
   return (
     <form action={dispatch} className="">
-      <div className="flex-1 rounded-lg bg-gray-50 w-[400px] px-6 pb-4 pt-8 text-black">
+      <div className="flex-1 rounded-lg border w-[400px] px-6 pb-4 pt-8 text-black bg-white shadow-sm">
         <h1 className={`   font-base text-lg mb-8 mt-2`}>
-        <span className="block font-semibold opacity-100  text-xl">LLM-based Text Analysis <br/> for Translation of Literary Texts</span>
-            
+          <span className="block font-semibold opacity-100  text-xl">
+            Playground Preview
+          </span>
         </h1>
-        
-        
+
         <div className="w-full">
           <div>
             <label
@@ -55,7 +55,17 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <LoginButton />
+        <div className="flex gap-2 items-center mt-10">
+          <LoginButton />
+          <p className="px-2 opacity-50 text-sm">or</p>
+          <a
+            href="mailto:parzerphilipp@gmail.com"
+            className="block px-4  py-2 rounded-md border text-sm"
+          >
+            request access
+          </a>
+        </div>
+        <div></div>
         <div
           className="flex mt-2 h-6 items-end space-x-1"
           aria-live="polite"
@@ -78,10 +88,10 @@ function LoginButton() {
 
   return (
     <button
-      className="mt-6 rounded-md px-4 hover:opacity-80 focus:outline-red-500     bg-black py-2 text-white"
+      className="block rounded-md px-4 hover:opacity-80 focus:outline-red-500     bg-black py-2 text-white text-sm"
       aria-disabled={pending}
     >
-      Log in
+      log in
     </button>
   );
 }

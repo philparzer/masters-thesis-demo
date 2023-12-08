@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable}   dark:bg-opacity-100 bg-opacity-50`}
+      className={`${GeistSans.variable} ${GeistMono.variable} dark:bg-opacity-100 bg-opacity-50`}
     >
       <body className="flex flex-col items-center p-24 bg-slate-50 dark:text-zinc-300 dark:bg-zinc-950">
         <Toaster
