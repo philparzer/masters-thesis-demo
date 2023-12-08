@@ -1,6 +1,5 @@
 import ClipboardText from "@/components/clipboard-text";
-import AnnotationPlayground from "../components/annotation-playground";
-import Link from "next/link";
+import AnnotationPlayground from "@/components/annotation-playground";
 
 export default function Home() {
   return (
@@ -43,8 +42,7 @@ export default function Home() {
         </span>{" "}
         The system outlined uses GPT-4's function-calling API.
       </p>
-      {/* <AnnotationPlayground /> */}
-      <Link href="/login">login</Link>
+      <AnnotationPlayground />
       <div className="px-5">
       <section className="mt-20">
         <h2 className="text-2xl dark:text-white font-semibold mb-4 text-left">Examples</h2>

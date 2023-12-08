@@ -11,12 +11,21 @@ const openai = new OpenAI({
 
 import { revalidatePath } from "next/cache";
 import { modelSchema } from "@/lib/types";
+import { auth, signIn } from "@/auth";
+import { AuthError } from "next-auth";
 
 export async function analyzeText(prevState: any, formData: FormData) {
+
+  const session = await auth()
+
+  if (!session) {
+    return { message: "You are not logged in", type: "error" };
+  }
 
   const isValidModelChoice = modelSchema.safeParse(
     formData.get("model") as string
   );
+  
 
   // console.log(formData.get("seed"))
   // TODO: seems broken on OpenAI's end -> hence commented out
@@ -121,5 +130,24 @@ export async function analyzeText(prevState: any, formData: FormData) {
   } catch (e) {
     console.log("error", e);
     return { message: "Failed to create", type: "error" };
+  }
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
   }
 }
