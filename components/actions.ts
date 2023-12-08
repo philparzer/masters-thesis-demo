@@ -16,12 +16,6 @@ import { AuthError } from "next-auth";
 
 export async function analyzeText(prevState: any, formData: FormData) {
 
-  const session = await auth()
-
-  if (!session) {
-    return { message: "You are not logged in", type: "error" };
-  }
-
   const isValidModelChoice = modelSchema.safeParse(
     formData.get("model") as string
   );
