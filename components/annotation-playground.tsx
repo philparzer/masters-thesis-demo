@@ -154,7 +154,6 @@ const AnnotationPlayground = () => {
   }, [model]);
 
   useEffect(() => {
-    console.log(state.message);
 
     if (state) {
       if (state.data) {
