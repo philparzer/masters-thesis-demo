@@ -36,12 +36,12 @@ export default function Home() {
           LLMs annotate the source text
         </span>{" "}
         hinting at possible pitfalls, hard to translate sections, and other
-        peculiarities. This increases human translators' efficiency, as{" "}
+        peculiarities. This increases human translators&apos; efficiency, as{" "}
         <span className="bg-black/10 dark:bg-white/20 dark:text-zinc-300 px-1 rounded-sm font-medium">
           translators can focus on translation problems and spend less time
           post-editing standard language.
         </span>{" "}
-        The system outlined uses GPT-4's function-calling API.
+        The system outlined uses GPT-4&apos;s function-calling API.
       </p>
       {/* <AnnotationPlayground /> */}
       <Link href="/login">login</Link>
@@ -49,8 +49,8 @@ export default function Home() {
       <section className="mt-20">
         <h2 className="text-2xl dark:text-white font-semibold mb-4 text-left">Examples</h2>
         <p className="mb-12 text-justify">
-          The texts provided below have been used to evaluate the efficacy of this tool in the paper. It's important to note that
-          the paper's focus on Russian presents an insightful
+          The texts provided below have been used to evaluate the efficacy of this tool in the paper. It&apos;s important to note that
+          the paper&apos;s focus on Russian presents an insightful
           yet limited perspective that highlights the need for
           expanded research to encompass a broader range of language pairs.
         </p>
