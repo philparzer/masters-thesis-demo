@@ -13,6 +13,9 @@ import { modelSchema } from "@/lib/types";
 
 export default async function analyzeText({model, text}: {model: string, text: string}) {
 
+
+    
+
     const isValidModelChoice = modelSchema.safeParse(
       model as string
     );
@@ -105,7 +108,10 @@ export default async function analyzeText({model, text}: {model: string, text: s
         completion.choices[0].message.function_call?.arguments
       );
       let validate = schema.safeParse(json.sections);
-  
+        
+        console.log("json")
+        console.log(json)
+
       if (!validate.success) {
         console.log("error in schema validation");
         return { message: "Invalid GPT output", type: "error" };
