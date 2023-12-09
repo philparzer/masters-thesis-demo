@@ -25,7 +25,7 @@ export default async function analyzeText({
 }) {
   const isValidModelChoice = modelSchema.safeParse(model as string);
 
-  console.log("logging")
+  console.log("logging, testing defer")
 
   // console.log(formData.get("seed"))
   // TODO: seems broken on OpenAI's end -> hence commented out
