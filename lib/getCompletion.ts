@@ -129,7 +129,7 @@ export default async function analyzeText({
     console.log("saving data")
     const { data, error } = await supabase
       .from("completions")
-      .insert([{ model, language, text, api_response: completion }]);
+      .insert([{ model, language, api_response: completion }]);
 
     if (error) throw error;
     console.log("saved", data);
