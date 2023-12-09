@@ -19,7 +19,7 @@ const TestCompletion = ({}: TestCompletionProps) => {
     try {
       pollingIntervalRef.current = window.setInterval(async () => {
         const response = await fetch(
-          "http://localhost:3000/api/pollCompletionStatus",
+          "/api/pollCompletionStatus",
           {
             method: "POST",
             headers: {
@@ -49,7 +49,7 @@ const TestCompletion = ({}: TestCompletionProps) => {
     setLoading(true);
     setError(false);
     try {
-      const response = await fetch("http://localhost:3000/api/getCompletion", {
+      const response = await fetch("/api/getCompletion", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
