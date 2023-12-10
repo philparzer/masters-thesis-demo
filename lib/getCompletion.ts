@@ -120,7 +120,7 @@ export default async function analyzeText({
     let language;
 
     try {
-      language = json.language;
+      language = json.source_language;
       if (isValidISO6391Code(language)) {
         console.log("language is valid");
       }
