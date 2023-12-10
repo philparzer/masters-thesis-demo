@@ -20,14 +20,14 @@ export default function RootLayout({
       className={`${GeistSans.variable} ${GeistMono.variable} dark:bg-opacity-100 bg-opacity-50`}
     >
       <body className="flex flex-col items-center p-4 pt-24 lg:p-24 bg-slate-50 dark:text-zinc-300 dark:bg-zinc-950">
-        <div className="fixed z-50  bottom-0 lg:right-auto right-4 lg:left-4 p-1 bg-red-600 text-[10px] lg:text-xs text-white">
+        <div className="fixed z-50  bottom-0 lg:right-auto right-4 lg:left-4 p-1 pb-0.5 px-2 bg-red-600 text-[10px] lg:text-xs text-white">
           under construction
         </div>
         <Toaster
           position="bottom-center"
           richColors
           closeButton
-          duration={15000}
+          duration={5000}
         />
         {children}
         <div className="fixed top-4 right-4 ">

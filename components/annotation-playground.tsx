@@ -30,6 +30,8 @@ import {
   defaultSystemPrompt,
   defaultTemperature,
 } from "@/lib/api-data";
+import { setCookie, getCookie } from "cookies-next";
+import { get } from "http";
 
 interface SubmitButtonInterface {
   content: string;
@@ -59,7 +61,7 @@ const SubmitButton = ({
             : !pending
             ? "opacity-10"
             : "bg-transparent text-black dark:text-white dark:border-white"
-        } left-0 top-0 flex  items-center gap-2 rounded-md text-white dark:bg-white dark:text-black px-4 py-1 bg-black border pr-3 transition-colors  border-black`}
+        } left-0 top-0 flex  items-center gap-2 rounded-md text- text-white dark:bg-white dark:text-black px-4 py-1 bg-black border pr-3 transition-colors  border-black`}
         disabled={content.length === 0 || pending}
         title={
           content.length === 0
@@ -215,7 +217,13 @@ const AnnotationPlayground = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: content, model, systemPrompt, functionCallDescription, temperature }),
+        body: JSON.stringify({
+          text: content,
+          model,
+          systemPrompt,
+          functionCallDescription,
+          temperature,
+        }),
       });
       const data = await response.json();
       console.log(data);
@@ -230,9 +238,25 @@ const AnnotationPlayground = () => {
     }
   };
 
+  useEffect(() => {
+    getCookie("temperature") &&
+      setTemperature(Number(getCookie("temperature")));
+    getCookie("functionCallDescription") &&
+      setFunctionCallDescription(String(getCookie("functionCallDescription")));
+    getCookie("systemPrompt") &&
+      setSystemPrompt(String(getCookie("systemPrompt")));
+  }, []);
+
+  const setSettingsCookie = () => {
+    setCookie("temperature", temperature);
+    setCookie("functionCallDescription", functionCallDescription);
+    setCookie("systemPrompt", systemPrompt);
+    toast.success("Settings saved");
+  };
+
   return (
     <div className="flex w-full max-w-[1000px] relative">
-      <div className="relative w-full  rounded-xl border pt-20 p-7 lg:p-10 lg:pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
+      <div className="relative mt-10  lg:mt-0 w-full  rounded-xl border pt-20 p-7 lg:p-10 lg:pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
         <div className="absolute w-full text-center -bottom-14 md:-bottom-7 left-0 opacity-30 text-xs px-4 py-1">
           by using this playground, you acknowledge and agree that your
           submissions will be stored in a public database for research purposes
@@ -372,9 +396,21 @@ const AnnotationPlayground = () => {
                     </Select>
                   </div>
 
-                  <Sheet>
-                    <SheetTrigger className="border rounded-md px-4 py-1 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
-                      settings
+                  <Sheet onOpenChange={(open) => !open && setSettingsCookie()}>
+                    <SheetTrigger className="border rounded-md px-4 pr-3 py-1.5 sm:py-1 bg-white dark:bg-zinc-900 absolute sm:static sm:right-auto right-0 sm:translate-y-0 -translate-y-16 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
+                      <span className="flex gap-2 items-center">
+                        settings
+                        <svg
+                          width="16"
+                          height="16"
+                          className="translate-y-[0.5px] fill-black dark:fill-white opacity-50"
+                          viewBox="0 -960 960 960"
+                          
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                         <path d="M440-120v-240h80v80h320v80H520v80h-80Zm-320-80v-80h240v80H120Zm160-160v-80H120v-80h160v-80h80v240h-80Zm160-80v-80h400v80H440Zm160-160v-240h80v80h160v80H680v80h-80Zm-480-80v-80h400v80H120Z"/>
+                        </svg>
+                      </span>
                     </SheetTrigger>
                     <SheetContent className="dark:text-white">
                       <SheetHeader>
@@ -382,7 +418,8 @@ const AnnotationPlayground = () => {
                           Settings
                         </SheetTitle>
                         <SheetDescription className="dark:text-zinc-100/50">
-                          Check our defaults, use them as is, or change them to your liking
+                          Check our defaults, use them as is, or change them to
+                          your liking
                         </SheetDescription>
                       </SheetHeader>
 
@@ -409,21 +446,27 @@ const AnnotationPlayground = () => {
                             className="text-xs flex gap-1 items-center h-4 hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
                             onClick={() => setSystemPrompt(defaultSystemPrompt)}
                           >
-                           {systemPrompt === defaultSystemPrompt ? "" : <>restore default<svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="16"
-                              viewBox="0 -960 960 960"
-                              width="16"
-                              className=" "
-                            >
-                              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
-                            </svg></>}
-                            
+                            {systemPrompt === defaultSystemPrompt ? (
+                              ""
+                            ) : (
+                              <>
+                                restore default
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  height="16"
+                                  viewBox="0 -960 960 960"
+                                  width="16"
+                                  className=" "
+                                >
+                                  <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                                </svg>
+                              </>
+                            )}
                           </button>
                         </div>
                         <textarea
                           id="system-prompt"
-                          className="w-full h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
+                          className="w-full text-sm lg:text-base h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
                           onChange={(e) => setSystemPrompt(e.target.value)}
                           value={systemPrompt}
                         ></textarea>
@@ -458,24 +501,35 @@ const AnnotationPlayground = () => {
                         </p>
                         <div className="flex justify-end">
                           <button
-                            className="text-xs flex gap-1 items-center h-4 hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
-                            onClick={() => setFunctionCallDescription(defaultFunctionCallDescription)}
+                            className="text-xs  flex gap-1 items-center h-4 hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
+                            onClick={() =>
+                              setFunctionCallDescription(
+                                defaultFunctionCallDescription
+                              )
+                            }
                           >
-                           {functionCallDescription === defaultFunctionCallDescription ? "" : <>restore default<svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="16"
-                              viewBox="0 -960 960 960"
-                              width="16"
-                              className=" "
-                            >
-                              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
-                            </svg></>}
-                            
+                            {functionCallDescription ===
+                            defaultFunctionCallDescription ? (
+                              ""
+                            ) : (
+                              <>
+                                restore default
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  height="16"
+                                  viewBox="0 -960 960 960"
+                                  width="16"
+                                  className=""
+                                >
+                                  <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                                </svg>
+                              </>
+                            )}
                           </button>
                         </div>
                         <textarea
                           id="function-description"
-                          className="w-full h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
+                          className="w-full text-sm lg:text-base h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
                           onChange={(e) =>
                             setFunctionCallDescription(e.target.value)
                           }
@@ -497,36 +551,41 @@ const AnnotationPlayground = () => {
                           and creativity.
                         </p>
                         <div className="flex gap-4 items-center ">
-                        
-                        <input
-                          id="temperature"
-                          type={"number"}
-                          className="w-20 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 py-2 px-4 focus:outline-black"
-                          step={0.1}
-                          max={2}
-                          min={0}
-                          value={temperature}
-                          onChange={(e) =>
-                            setTemperature(Number(e.target.value))
-                          }
-                        ></input>
-                        <div className="flex justify-end">
-                          <button
-                            className="text-xs flex gap-1 items-center hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
-                            onClick={() => setTemperature(defaultTemperature)}
-                          >
-                           {temperature === defaultTemperature ? "" : <>restore default<svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              height="16"
-                              viewBox="0 -960 960 960"
-                              width="16"
-                              className=" "
+                          <input
+                            id="temperature"
+                            type={"number"}
+                            className="w-20 border text-sm lg:text-base dark:border-zinc-600 rounded-md dark:bg-zinc-900 py-2 px-4 focus:outline-black"
+                            step={0.1}
+                            max={2}
+                            min={0}
+                            value={temperature}
+                            onChange={(e) =>
+                              setTemperature(Number(e.target.value))
+                            }
+                          ></input>
+                          <div className="flex justify-end">
+                            <button
+                              className="text-xs flex gap-1 items-center hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
+                              onClick={() => setTemperature(defaultTemperature)}
                             >
-                              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
-                            </svg></>}
-                            
-                          </button>
-                        </div>
+                              {temperature === defaultTemperature ? (
+                                ""
+                              ) : (
+                                <>
+                                  restore default
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="16"
+                                    viewBox="0 -960 960 960"
+                                    width="16"
+                                    className=" "
+                                  >
+                                    <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                                  </svg>
+                                </>
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <div className="mt-16 flex flex-col">
@@ -548,7 +607,7 @@ const AnnotationPlayground = () => {
                         <input
                           id="seed"
                           type={"number"}
-                          className="w-full pointer-events-none border opacity-20 dark:border-zinc-600 rounded-md dark:bg-zinc-900 py-2 px-4 focus:outline-black"
+                          className="w-full text-sm lg:text-base pointer-events-none border opacity-20 dark:border-zinc-600 rounded-md dark:bg-zinc-900 py-2 px-4 focus:outline-black"
                           placeholder="2349239857113785"
                           disabled
                         ></input>

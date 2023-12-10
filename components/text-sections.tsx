@@ -36,20 +36,20 @@ const TextSections = ({}: TextSectionsProps) => {
           />
 
           <p className="text-justify">
-            <span className="text-red-500">more examples coming soon</span>
+            <span className="text-red-500 opacity-50">more examples soon</span>
           </p>
         </div>
       </section>
       <section className="mt-20">
         <h2 className="text-xl lg:text-2xl dark:text-white font-semibold mb-2 lg:mb-4">Prompts</h2>
         <p className="text-justify">
-          <span className="text-red-500">section coming soon</span>
+          <span className="text-red-500 opacity-50">section coming soon</span>
         </p>
       </section>
       <section className="mt-20">
         <h2 className="text-xl lg:text-2xl dark:text-white font-semibold mb-2 lg:mb-4">The Paper</h2>
         <p className="text-justify">
-          <span className="text-red-500">section coming soon</span>
+          <span className="text-red-500 opacity-50">section coming soon</span>
         </p>
       </section>
       <section className="mt-20">
@@ -57,7 +57,7 @@ const TextSections = ({}: TextSectionsProps) => {
           Further Research
         </h2>
         <p className="text-justify">
-          <span className="text-red-500">section coming soon</span>
+          <span className="text-red-500 opacity-50">section coming soon</span>
         </p>
       </section>
       <section className="mt-20">
@@ -65,7 +65,7 @@ const TextSections = ({}: TextSectionsProps) => {
           Public API
         </h2>
         <p className="text-justify">
-          <span className="text-red-500">section coming soon</span>
+          <span className="text-red-500 opacity-50">section coming soon</span>
         </p>
       </section>
       <section className="mt-20">
@@ -73,7 +73,7 @@ const TextSections = ({}: TextSectionsProps) => {
           Architecture
         </h2>
         <p className="text-justify">
-          <span className="text-red-500">section coming soon</span>
+          <span className="text-red-500 opacity-50">section coming soon</span>
         </p>
       </section>
       <section className="mt-20 text-justify">
@@ -81,7 +81,7 @@ const TextSections = ({}: TextSectionsProps) => {
           Local Setup
         </h2>
         <p className="text-justify">
-          <span className="text-red-500">section coming soon</span>
+          <span className="text-red-500 opacity-50">section coming soon</span>
         </p>
       </section>
     </div>
