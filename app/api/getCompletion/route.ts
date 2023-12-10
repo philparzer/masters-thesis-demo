@@ -21,6 +21,21 @@ req: Request,
       return new NextResponse("ERROR 500: no text specified", {status: 500})
     }
 
+    if (!body.functionCallDescription) {
+      return new NextResponse("ERROR 500: no functionCallDescription specified", {status: 500})
+    }
+
+    if (!body.systemPrompt) {
+      return new NextResponse("ERROR 500: no systemPrompt specified", {status: 500})
+    }
+
+    if (!body.temperature) {
+      return new NextResponse("ERROR 500: no temperature specified", {status: 500})
+    }
+
+    const temperature = body.temperature;
+    const systemPrompt = body.systemPrompt;
+    const functionCallDescription = body.functionCallDescription;
     const model = body.model;
     const text = body.text;
 

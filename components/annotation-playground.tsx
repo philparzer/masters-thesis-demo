@@ -215,7 +215,7 @@ const AnnotationPlayground = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: content, model: model }),
+        body: JSON.stringify({ text: content, model, systemPrompt, functionCallDescription, temperature }),
       });
       const data = await response.json();
       console.log(data);

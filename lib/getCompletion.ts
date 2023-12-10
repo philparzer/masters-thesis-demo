@@ -4,7 +4,7 @@
 //another option would be to stream the result e.g. https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts
 
 import OpenAI from "openai";
-import { functions } from "@/lib/openai-functions";
+import { functions, getCustomizedFunction } from "@/lib/openai-functions";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
 import { isValidISO6391Code } from "@/lib/utils";
@@ -23,12 +23,22 @@ import { modelSchema } from "@/lib/types";
 export default async function analyzeText({
   model,
   text,
+  temperature,
+  systemPrompt,
+  functionCallDescription,
 }: {
   model: string;
   text: string;
+  temperature: number;
+  systemPrompt: string;
+  functionCallDescription: string;
 }) {
   const isValidModelChoice = modelSchema.safeParse(model as string);
-
+  const isValidTemperature = z.number().max(2).min(0).safeParse(temperature);
+  const isValidSystemPrompt = z.string().safeParse(systemPrompt);
+  const isValidFunctionCallDescription = z.string().safeParse(
+    functionCallDescription
+  );
 
   const startTime = performance.now();
 
@@ -36,6 +46,30 @@ export default async function analyzeText({
     console.log("error in model choice");
     return {
       message: "Invalid model choice. Your query parameters are invalid.",
+      type: "error",
+    };
+  }
+
+  if (!isValidTemperature.success) {
+    console.log("error in temperature");
+    return {
+      message: "Invalid temperature. Your settings are invalid.",
+      type: "error",
+    };
+  }
+
+  if (!isValidSystemPrompt.success) {
+    console.log("error in systemPrompt");
+    return {
+      message: "Invalid systemPrompt. Your settings are invalid",
+      type: "error",
+    };
+  }
+
+  if (!isValidFunctionCallDescription.success) {
+    console.log("error in functionCallDescription");
+    return {
+      message: "Invalid functionCallDescription. Your settings are invalid.",
       type: "error",
     };
   }
@@ -56,14 +90,15 @@ export default async function analyzeText({
       messages: [
         {
           role: "system",
-          content: `Always call the function analyze_text_for_translation, always return JSON! You analyze the text as a translator would, considering hard to translate parts of the text. The descriptions should be in English and concise, no need for full sentences. The target group of this function is translators, so terminology specific to linguistics and translation studies can be used. Return each phrase only once. Return only the phrases that are hard, not entire sentences, unless the entire sentence is hard to translate. Don't attempt to translate the phrase. Explain why it's hard, and what makes it hard to translate. Include possible pitfalls for machine translation systems if applicable.`,
+          content: systemPrompt,
         },
         { role: "user", content: text },
       ],
       model: model,
-      functions,
+      temperature: temperature,
+      functions: getCustomizedFunction(functionCallDescription),
       function_call: "auto",
-      // seed: inputSeed,
+      // seed: inputSeed TODO:,
     });
 
     isValidFunctionCall = completion.choices[0].message.function_call?.arguments
@@ -136,7 +171,7 @@ export default async function analyzeText({
     console.log("saving data")
     const { data, error } = await supabase
       .from("completions")
-      .insert([{ model, language, execution_time: executionTime, api_response: completion }]);
+      .insert([{ model, language, execution_time: executionTime, api_response: completion, input_text: text, function_call_description: functionCallDescription, system_prompt: systemPrompt, temperature }]);
 
     if (error) throw error;
     console.log("saved", data);
