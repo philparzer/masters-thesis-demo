@@ -543,7 +543,7 @@ const AnnotationPlayground = () => {
                         <p className="opacity-50 text-xs mb-3">
                           Seeds are a way to get reproducable results from AI
                           models. OpenAI introduced seeds at their DevDay 2023
-                          but, as of now, they don't seem to work properly.
+                          but, as of now, they don&apos;t seem to work properly.
                         </p>
                         <input
                           id="seed"
