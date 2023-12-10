@@ -26,18 +26,8 @@ export default async function analyzeText({
 }) {
   const isValidModelChoice = modelSchema.safeParse(model as string);
 
-  console.log("logging, testing defer")
 
-  // console.log(formData.get("seed"))
-  // TODO: seems broken on OpenAI's end -> hence commented out
-  // const isValidSeed = z.number().int().safeParse(parseInt(formData.get("seed") as string));
-  // if (!isValidSeed.success) {
-  //   console.log("error in seed");
-  //   return {
-  //     message: "Invalid seed. Your query parameters are invalid.",
-  //     type: "error",
-  //   };
-  // }
+  const startTime = performance.now();
 
   if (!isValidModelChoice.success) {
     console.log("error in model choice");
@@ -136,17 +126,18 @@ export default async function analyzeText({
       language = "unknown";
     }
     
+    const endTime = performance.now();
+    const executionTime = (endTime - startTime)
 
     //save to supabase
     console.log("saving data")
     const { data, error } = await supabase
       .from("completions")
-      .insert([{ model, language, api_response: completion }]);
+      .insert([{ model, language, execution_time: executionTime, api_response: completion }]);
 
     if (error) throw error;
     console.log("saved", data);
 
-    //TODO: check validity of response json choices[0]
     return { jsonToSave: completion, data: json };
   } catch (e) {
     console.log("error", e);
