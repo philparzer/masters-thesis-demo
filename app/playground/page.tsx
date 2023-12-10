@@ -1,6 +1,5 @@
 import AnnotationPlayground from "@/components/annotation-playground";
 import Header from "@/components/header";
-import TestCompletion from "@/components/test-completion";
 import TextSections from "@/components/text-sections";
 
 export default function Home() {
@@ -9,7 +8,6 @@ export default function Home() {
       <Header />
       <AnnotationPlayground />
       <TextSections />
-      <TestCompletion />
     </main>
   );
 }

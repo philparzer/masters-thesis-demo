@@ -6,6 +6,10 @@ interface AnnotatedTextProps {
 }
 
 export default function AnnotatedText({ text, sections }: AnnotatedTextProps) {
+
+  console.log("logging from annotated-text.tsx");
+  console.log(sections);
+
   // Defines the structure for each occurrence of the phrases in the text
   type Occurrence = {
     start: number;

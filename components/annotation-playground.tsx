@@ -1,8 +1,6 @@
 "use client";
 
-import { analyzeText } from "@/components/actions";
 import { useEffect, useRef, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
 import AnnotatedText from "./annotated-text";
 import { modelSchema, models } from "@/lib/types";
 import {
@@ -10,7 +8,7 @@ import {
   defaultSystemPrompt,
   defaultTemperature,
 } from "@/lib/api-data";
-import { toast } from "sonner";
+import { toast } from "sonner"; //TODO: use sonner instead of error state
 import {
   Sheet,
   SheetContent,
@@ -30,19 +28,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
 interface SubmitButtonInterface {
   content: string;
-  setIsLoading: (isLoading: boolean) => void;
+  pending: boolean;
+  getCompletion: () => void;
 }
 
 const maxCharCount = 1800;
 
-const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
-  const { pending } = useFormStatus();
-  useEffect(() => {
-    setIsLoading(pending);
-  }, [pending]);
+const SubmitButton = ({ content, pending, getCompletion }: SubmitButtonInterface) => {
   return (
     <div className="flex gap-4 items-center">
       {content.length > maxCharCount ? (
@@ -54,10 +48,10 @@ const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
       <button
         className={` ${
           content.length > 0 && content.length <= maxCharCount && !pending
-            ? "group hover:bg-opacity-80 dark:bg-zinc-900 focus:outline-red-500"
+            ? "group hover:bg-opacity-80  focus:outline-red-500"
             : !pending
             ? "opacity-10"
-            : "bg-transparent text-black "
+            : "bg-transparent text-black dark:text-white dark:border-white"
         } left-0 top-0 flex  items-center gap-2 rounded-md text-white dark:bg-white dark:text-black px-4 py-1 bg-black border pr-3 transition-colors  border-black`}
         disabled={content.length === 0 || pending}
         title={
@@ -67,7 +61,7 @@ const SubmitButton = ({ content, setIsLoading }: SubmitButtonInterface) => {
             ? `you are currently at ${content.length}, 18 000 characters is the limit `
             : "Analyze text"
         }
-        type="submit"
+        onClick={getCompletion}
       >
         {pending ? (
           <span className=" flex items-center gap-2 text-black">
@@ -117,17 +111,19 @@ const AnnotationPlayground = () => {
   const pathname = usePathname();
   const [textAreaFocused, setTextAreaFocused] = useState(false);
   const [content, setContent] = useState("");
+  const executionIdRef = useRef(null);
+  const pollingIntervalRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [jsonToSave, setJSONtoSave] = useState<string | null>(null);
+  const [error, setError] = useState<any>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [formState, setFormState] =
+  const [completionState, setCompletionState] =
     useState<{ phrase: string; description: string }[]>();
   const [model, setModel] = useState<models>(
     modelSchema.safeParse(searchParams.get("model")).success
       ? (searchParams.get("model") as models)
       : "gpt-4-0613"
   );
-
-  const [state, formAction] = useFormState(analyzeText, { message: "", type: "" });
 
   const updateSearchQuery = (updatedQuery: { [key: string]: string }) => {
     const params = new URLSearchParams(searchParams);
@@ -153,30 +149,66 @@ const AnnotationPlayground = () => {
     updateSearchQuery({ model: model });
   }, [model]);
 
-  useEffect(() => {
-
-    if (state) {
-      if (state.data) {
-      if (state.data.sections && state.data.sections.length > 0) {
-        setFormState(state.data.sections);
-      }
-
-      if (state.type && state.type === "error") {
-        console.log("error er");
-        toast.error(state.message);
-      }
+  const startPolling = (id: string) => {
+    console.log("posting id");
+    console.log({ executionId: id });
+    try {
+      pollingIntervalRef.current = window.setInterval(async () => {
+        const response = await fetch("/api/pollCompletionStatus", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ executionId: id }),
+        });
+        const data = await response.json();
+        console.log(data);
+        if (data.res.state === "succeed") {
+          console.log("\n\n ---------------- \n succeed!!!");
+          window.clearInterval(pollingIntervalRef.current);
+          console.log("completed");
+          setJSONtoSave(JSON.stringify(data.res.result));
+          console.log(data.res.result.data.sections)
+          setCompletionState(data.res.result.data.sections);
+          setIsLoading(false);
+        }
+      }, 1000);
+    } catch (e) {
+      console.log(e);
+      pollingIntervalRef.current = null;
+      setIsLoading(false);
     }
-  }
+  };
 
-    //TODO: error handline
-  }, [state]);
+  const getCompletion = async () => {
+    setIsLoading(true);
+    setError(false);
+    try {
+      const response = await fetch("/api/getCompletion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: content, model: model }),
+      });
+      const data = await response.json();
+      console.log(data);
+      executionIdRef.current = data.executionId;
+    
+      startPolling(data);
+    } catch (e) {
+      console.log(e);
+      pollingIntervalRef.current = null;
+      setIsLoading(false);
+      setError(true);
+    }
+  };
+
+  console.log("executionIdRef");
+  console.log(executionIdRef.current);
 
   return (
-    <form
-      ref={formRef}
-      className="flex w-full max-w-[1000px] relative"
-      action={formAction}
-    >
+    <div className="flex w-full max-w-[1000px] relative">
       <div className="relative w-full  rounded-xl border p-10 pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
         {/*border svgs*/}
         <div className="absolute p-10 pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10 d">
@@ -188,7 +220,9 @@ const AnnotationPlayground = () => {
             <svg
               width="8"
               height="8"
-              className={` dark:stroke-white ${isLoading ? "animate-pulse" : ""}`}
+              className={` dark:stroke-white ${
+                isLoading ? "animate-pulse" : ""
+              }`}
               viewBox="0 0 72 71"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -290,11 +324,11 @@ const AnnotationPlayground = () => {
           </div>
         </div>
 
-        {formState ? (
+        {completionState ? (
           <div
             className={`  w-full h-[80vh] max-h-[500px]  p-4 placeholder:font-medium`}
           >
-            <AnnotatedText text={content} sections={state.data.sections || []} />
+            <AnnotatedText text={content} sections={completionState || []} />
           </div>
         ) : (
           <>
@@ -325,7 +359,7 @@ const AnnotationPlayground = () => {
             <h2 className="opacity-50 py-1">Text Analysis Playground</h2>
           </div>
           {/*submit button or trash button*/}
-          {formState ? ( //if form is submitted + annotation is shown
+          {completionState ? ( //if form is submitted + annotation is shown
             <div className="flex gap-5">
               <button
                 className="text-black  rounded-md underline opacity-50 underline-offset-2 decoration-2 decoration-black/50 dark:decoration-white/50 hover:opacity-100"
@@ -333,7 +367,7 @@ const AnnotationPlayground = () => {
                   e.preventDefault();
                   const outputObj = {
                     text: content,
-                    ...state.jsonToSave,
+                    analysis: jsonToSave,
                   };
                   const dataStr = JSON.stringify(outputObj, null, 2); // Convert to JSON string with pretty print
                   const blob = new Blob([dataStr], {
@@ -359,7 +393,7 @@ const AnnotationPlayground = () => {
                   e.preventDefault();
                   setContent("");
                   formRef.current?.reset();
-                  setFormState(undefined);
+                  setCompletionState(undefined);
                 }}
               >
                 <span className="flex items-center gap-1.5 py-0.5 ">
@@ -417,14 +451,16 @@ const AnnotationPlayground = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <Sheet>
                     <SheetTrigger className="border rounded-md px-4 py-1 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
                       settings
                     </SheetTrigger>
                     <SheetContent className="dark:text-white">
                       <SheetHeader>
-                        <SheetTitle className="dark:text-zinc-100">Settings</SheetTitle>
+                        <SheetTitle className="dark:text-zinc-100">
+                          Settings
+                        </SheetTitle>
                         <SheetDescription className="dark:text-zinc-100/50">
                           Check our defaults and change them if you want
                         </SheetDescription>
@@ -474,16 +510,15 @@ const AnnotationPlayground = () => {
                         />
                       </div>
                     </SheetContent>
-                  </Sheet> 
-                  
+                  </Sheet>
                 </div>
               ) : null}
-              <SubmitButton content={content} setIsLoading={setIsLoading} />
+              <SubmitButton content={content} pending={isLoading} getCompletion={getCompletion} />
             </div>
           )}
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 
