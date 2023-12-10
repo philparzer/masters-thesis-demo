@@ -127,7 +127,7 @@ export default async function analyzeText({
     }
     
     const endTime = performance.now();
-    const executionTime = (endTime - startTime)
+    const executionTime = Math.floor(endTime - startTime)
 
     //save to supabase
     console.log("saving data")
@@ -137,7 +137,7 @@ export default async function analyzeText({
 
     if (error) throw error;
     console.log("saved", data);
-
+    //TODO: check validity of data -> if sections exists etc
     return { jsonToSave: completion, data: json };
   } catch (e) {
     console.log("error", e);

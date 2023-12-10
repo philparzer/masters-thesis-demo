@@ -167,6 +167,9 @@ const AnnotationPlayground = () => {
           console.log("\n\n ---------------- \n succeed!!!");
           window.clearInterval(pollingIntervalRef.current);
           console.log("completed");
+
+          //TODO: add error handling
+
           setJSONtoSave(JSON.stringify(data.res.result));
           console.log(data.res.result.data.sections)
           setCompletionState(data.res.result.data.sections);
