@@ -17,6 +17,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import TextAreaDecoration from "./text-area-decoration";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import {
+  defaultFunctionCallDescription,
+  defaultSystemPrompt,
+  defaultTemperature,
+} from "@/lib/api-data";
 
 interface SubmitButtonInterface {
   content: string;
@@ -110,6 +123,11 @@ const AnnotationPlayground = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [jsonToSave, setJSONtoSave] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const [functionCallDescription, setFunctionCallDescription] =
+    useState<string>(defaultFunctionCallDescription);
+  const [systemPrompt, setSystemPrompt] = useState<string>(defaultSystemPrompt);
+  const [temperature, setTemperature] = useState<number>(defaultTemperature);
+
   const [completionState, setCompletionState] =
     useState<{ phrase: string; description: string }[]>();
   const [model, setModel] = useState<models>(
@@ -175,7 +193,7 @@ const AnnotationPlayground = () => {
             } else {
               toast.error("Error parsing response");
             }
-            
+
             setIsLoading(false);
           }
         }
@@ -187,7 +205,6 @@ const AnnotationPlayground = () => {
       setIsLoading(false);
     }
   };
-
 
   //called when user clicks on analyze button, calls api endpoint to start OPENAI completion as background job
   const getCompletion = async () => {
@@ -216,7 +233,10 @@ const AnnotationPlayground = () => {
   return (
     <div className="flex w-full max-w-[1000px] relative">
       <div className="relative w-full  rounded-xl border pt-20 p-7 lg:p-10 lg:pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
-        <div className="absolute w-full text-center -bottom-14 md:-bottom-7 left-0 opacity-30 text-xs px-4 py-1">by using this playground, you acknowledge and agree that your submissions will be stored in a public database for research purposes</div>
+        <div className="absolute w-full text-center -bottom-14 md:-bottom-7 left-0 opacity-30 text-xs px-4 py-1">
+          by using this playground, you acknowledge and agree that your
+          submissions will be stored in a public database for research purposes
+        </div>
         {/*border svgs*/}
         <div className="absolute p-6 pt-20 lg:p-10 lg:pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10 d">
           <div
@@ -251,10 +271,12 @@ const AnnotationPlayground = () => {
             ></textarea>
           </>
         )}
-        
+
         <div className="absolute flex w-full border-b dark:border-zinc-600 left-0 justify-between top-0 p-4 h-14 text-sm z-0 items-center">
           <div className="flex gap-2 items-center">
-            <h2 className="opacity-50 py-1 hidden sm:block">Text Analysis Playground</h2>
+            <h2 className="opacity-50 py-1 hidden sm:block">
+              Text Analysis Playground
+            </h2>
           </div>
 
           {completionState ? ( //if form is submitted + annotation is shown
@@ -350,8 +372,6 @@ const AnnotationPlayground = () => {
                     </Select>
                   </div>
 
-                  {/* //TODO: maybe add prompt and function editing later on
-                  
                   <Sheet>
                     <SheetTrigger className="border rounded-md px-4 py-1 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
                       settings
@@ -362,57 +382,179 @@ const AnnotationPlayground = () => {
                           Settings
                         </SheetTitle>
                         <SheetDescription className="dark:text-zinc-100/50">
-                          Check our defaults and change them if you want
+                          Check our defaults, use them as is, or change them to your liking
                         </SheetDescription>
                       </SheetHeader>
 
-                      <div className="mt-10">
-                        <label className="text-sm pb-2 block opacity-50">
-                          System Prompt
-                        </label>
+                      <div className="mt-14">
+                        <div className="relative flex gap-4 items-center pb-2">
+                          <div>
+                            <label
+                              htmlFor="system-prompt"
+                              className="text-sm block opacity-80"
+                            >
+                              System Prompt
+                            </label>
+                          </div>
+                        </div>
+                        <p className="opacity-50 text-xs mb-1">
+                          A set of instructions that directs the AI to produce a
+                          specific response. Ambiguous or improperly structured
+                          prompts can lead to erroneous or irrelevant outputs.
+                          In contrast, a carefully constructed prompt can result
+                          in highly relevant and effective outcomes.
+                        </p>
+                        <div className="flex justify-end ">
+                          <button
+                            className="text-xs flex gap-1 items-center h-4 hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
+                            onClick={() => setSystemPrompt(defaultSystemPrompt)}
+                          >
+                           {systemPrompt === defaultSystemPrompt ? "" : <>restore default<svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="16"
+                              viewBox="0 -960 960 960"
+                              width="16"
+                              className=" "
+                            >
+                              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                            </svg></>}
+                            
+                          </button>
+                        </div>
                         <textarea
+                          id="system-prompt"
                           className="w-full h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
-                          defaultValue={defaultSystemPrompt}
+                          onChange={(e) => setSystemPrompt(e.target.value)}
+                          value={systemPrompt}
                         ></textarea>
                       </div>
-                      <div className="mt-10">
-                        <label className="text-sm pb-2 block opacity-50">
+                      <div className="mt-14">
+                        <label
+                          htmlFor="function-description"
+                          className="text-sm pb-2 block opacity-80"
+                        >
                           Function Description
                         </label>
+                        <p className="opacity-50 text-xs mb-1">
+                          Used to describe what the OpenAI function should do
+                          with the input it receives. Read more about function
+                          calling in{" "}
+                          <a
+                            className="underline"
+                            href="https://platform.openai.com/docs/guides/function-calling"
+                            target="_blank"
+                          >
+                            the OpenAI docs
+                          </a>{" "}
+                          or check out the schema for the function used in this
+                          app{" "}
+                          <a
+                            className="underline"
+                            href="https://github.com/philparzer/masters-thesis-demo/blob/main/lib/openai-functions.ts"
+                            target="_blank"
+                          >
+                            here
+                          </a>
+                        </p>
+                        <div className="flex justify-end">
+                          <button
+                            className="text-xs flex gap-1 items-center h-4 hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
+                            onClick={() => setFunctionCallDescription(defaultFunctionCallDescription)}
+                          >
+                           {functionCallDescription === defaultFunctionCallDescription ? "" : <>restore default<svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="16"
+                              viewBox="0 -960 960 960"
+                              width="16"
+                              className=" "
+                            >
+                              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                            </svg></>}
+                            
+                          </button>
+                        </div>
                         <textarea
+                          id="function-description"
                           className="w-full h-40 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 focus:outline-black p-4"
-                          defaultValue={defaultFunctionCallDescription}
+                          onChange={(e) =>
+                            setFunctionCallDescription(e.target.value)
+                          }
+                          value={functionCallDescription}
                         ></textarea>
                       </div>
-                      <div className="mt-10 flex flex-col">
-                        <label className="text-sm pb-2 block opacity-50">
+                      <div className="mt-14 flex flex-col">
+                        <label
+                          htmlFor="temperature"
+                          className="text-sm pb-2 block opacity-80"
+                        >
                           Temperature
                         </label>
+                        <p className="opacity-50 text-xs mb-3">
+                          Lower values for temperature result in more consistent
+                          outputs (e.g. 0.2), while higher values generate more
+                          diverse and creative results. Select a temperature
+                          value based on the desired trade-off between coherence
+                          and creativity.
+                        </p>
+                        <div className="flex gap-4 items-center ">
+                        
                         <input
+                          id="temperature"
                           type={"number"}
                           className="w-20 border dark:border-zinc-600 rounded-md dark:bg-zinc-900 py-2 px-4 focus:outline-black"
                           step={0.1}
-                          max={1}
+                          max={2}
                           min={0}
-                          defaultValue={defaultTemperature}
+                          value={temperature}
+                          onChange={(e) =>
+                            setTemperature(Number(e.target.value))
+                          }
+                        ></input>
+                        <div className="flex justify-end">
+                          <button
+                            className="text-xs flex gap-1 items-center hover:text-red-500 hover:fill-red-500 dark:fill-white border-zinc-600"
+                            onClick={() => setTemperature(defaultTemperature)}
+                          >
+                           {temperature === defaultTemperature ? "" : <>restore default<svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              height="16"
+                              viewBox="0 -960 960 960"
+                              width="16"
+                              className=" "
+                            >
+                              <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" />
+                            </svg></>}
+                            
+                          </button>
+                        </div>
+                        </div>
+                      </div>
+                      <div className="mt-16 flex flex-col">
+                        <label
+                          htmlFor="seed"
+                          className="text-sm font-semibold pb-2 opacity-80 flex gap-2 items-center"
+                        >
+                          Seed
+                          <span className="text-red-500 text-[10px] block -translate-y-2 rounded-full border px-2 border-red-500">
+                            coming soon
+                          </span>
+                        </label>
+
+                        <p className="opacity-50 text-xs mb-3">
+                          Seeds are a way to get reproducable results from AI
+                          models. OpenAI introduced seeds at their DevDay 2023
+                          but, as of now, they don't seem to work properly.
+                        </p>
+                        <input
+                          id="seed"
+                          type={"number"}
+                          className="w-full pointer-events-none border opacity-20 dark:border-zinc-600 rounded-md dark:bg-zinc-900 py-2 px-4 focus:outline-black"
+                          placeholder="2349239857113785"
+                          disabled
                         ></input>
                       </div>
-                      <div className="mt-10 flex flex-col">
-                        <label className="text-sm pb-2 block opacity-50">
-                          Seed
-                        </label>
-                        <input
-                          type="number"
-                          name="seed"
-                          placeholder="optional"
-                          className="bg-white dark:bg-zinc-900 border dark:border-zinc-600 px-2 w-full rounded-md py-1.5 focus:outline-black"
-                          step={1}
-                        />
-                      </div>
                     </SheetContent>
-                  </Sheet> 
-                  
-                  */}
+                  </Sheet>
                 </div>
               ) : null}
               <SubmitButton
