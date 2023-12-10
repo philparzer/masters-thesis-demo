@@ -4,6 +4,7 @@ import OpenAI from "openai";
 import { functions } from "@/lib/openai-functions";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
+import { isValidISO6391Code } from "@/lib/utils";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -76,13 +77,6 @@ export default async function analyzeText({
       ? true
       : false;
 
-    //TODO: save results in DB
-    // console.log("\n\n\nTODO SAVE THIS IN DB")
-    // console.log(completion)
-
-    //TODO: when seed is fixed, save seed in DB
-    // console.log("and save Seed", inputSeed)
-
     if (!isValidFunctionCall) {
       //if gpt didnt return a valid function call
       console.log("Failed to create");
@@ -122,8 +116,26 @@ export default async function analyzeText({
       console.log("error in schema validation");
       return { message: "Invalid GPT output", type: "error" };
     }
+  
+    let language;
+
+    try {
+      language = json.language;
+      if (isValidISO6391Code(language)) {
+        console.log("language is valid");
+      }
+
+      else {
+        console.log("language is invalid");
+        language = "unknown";
+      }
+    }
+
+    catch {
+      console.log("language is invalid");
+      language = "unknown";
+    }
     
-    const language = "ru" //TODO: get from client
 
     //save to supabase
     console.log("saving data")
