@@ -1,5 +1,8 @@
 "use server";
 
+//this function runs as a background job on defer.run -> why? because it takes a long time to run on Vercel serverless functions
+//another option would be to stream the result e.g. https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts
+
 import OpenAI from "openai";
 import { functions } from "@/lib/openai-functions";
 import { z } from "zod";

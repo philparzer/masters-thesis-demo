@@ -1,10 +1,12 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
  
+// helper function that is used to merge tailwind classes
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// helper function that is used to check gpt output validity 
 export function isValidISO6391Code(code: string): boolean {
   const iso6391Codes: string[] = [
       'aa', 'ab', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 

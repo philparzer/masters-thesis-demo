@@ -1,27 +1,7 @@
 "use client";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  defaultFunctionCallDescription,
-  defaultSystemPrompt,
-  defaultTemperature,
-} from "@/lib/api-data";
+// annotation playground preview component that displays an image of the playground and a button to request access on home
+
 import Link from "next/link";
 import Image from "next/image";
 

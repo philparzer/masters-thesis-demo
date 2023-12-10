@@ -1,3 +1,5 @@
+//hook that detects if a click is outside of a component
+
 import { useRef, useEffect} from "react"
 
 const useOutsideClick = (callback:any) => {

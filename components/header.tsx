@@ -1,10 +1,10 @@
-interface HeaderProps {}
+//reusable component for content sections (used in playground and home)
 
-const Header = ({}: HeaderProps) => {
+const Header = () => {
   return (
     <>
       <section className="text-center">
-        <h1 className="text-4xl font-semibold leading-[1.3em] dark:text-white">
+        <h1 className="text-[26px] lg:text-4xl font-semibold leading-[1.3em] dark:text-white">
           LLM-based Text Analysis for <br></br> Translation of Literary Texts
         </h1>
 

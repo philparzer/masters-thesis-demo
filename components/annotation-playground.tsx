@@ -1,9 +1,11 @@
 "use client";
 
+//wrapper component for annotation playground
+
 import { useEffect, useRef, useState } from "react";
 import AnnotatedText from "./annotated-text";
 import { modelSchema, models } from "@/lib/types";
-import { toast } from "sonner"; //TODO: use sonner instead of error state and implement
+import { toast } from "sonner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
@@ -24,7 +26,11 @@ interface SubmitButtonInterface {
 
 const maxCharCount = 1800;
 
-const SubmitButton = ({ content, pending, getCompletion }: SubmitButtonInterface) => {
+const SubmitButton = ({
+  content,
+  pending,
+  getCompletion,
+}: SubmitButtonInterface) => {
   return (
     <div className="flex gap-4 items-center">
       {content.length > maxCharCount ? (
@@ -103,7 +109,6 @@ const AnnotationPlayground = () => {
   const pollingIntervalRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [jsonToSave, setJSONtoSave] = useState<string | null>(null);
-  const [error, setError] = useState<any>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [completionState, setCompletionState] =
     useState<{ phrase: string; description: string }[]>();
@@ -113,6 +118,7 @@ const AnnotationPlayground = () => {
       : "gpt-4-0613"
   );
 
+  //handles query params (getting/setting model)
   const updateSearchQuery = (updatedQuery: { [key: string]: string }) => {
     const params = new URLSearchParams(searchParams);
     Object.keys(updatedQuery).forEach((key) => {
@@ -127,6 +133,7 @@ const AnnotationPlayground = () => {
     router.replace(updatedPath, { scroll: false });
   };
 
+  //handles query params (getting/setting model)
   useEffect(() => {
     console.log("updating search params");
     if (searchParams.has("model")) {
@@ -137,6 +144,7 @@ const AnnotationPlayground = () => {
     updateSearchQuery({ model: model });
   }, [model]);
 
+  //starts polling for completion status of background job; polls each second
   const startPolling = (id: string) => {
     console.log("posting id");
     console.log({ executionId: id });
@@ -152,28 +160,38 @@ const AnnotationPlayground = () => {
         const data = await response.json();
         console.log(data);
         if (data.res.state === "succeed") {
-          console.log("\n\n ---------------- \n succeed!!!");
           window.clearInterval(pollingIntervalRef.current);
-          console.log("completed");
+          console.log("-> polling completed");
 
-          //TODO: add error handling
-
-          setJSONtoSave(JSON.stringify(data.res.result));
-          console.log(data.res.result.data.sections)
-          setCompletionState(data.res.result.data.sections);
-          setIsLoading(false);
+          try {
+            setJSONtoSave(JSON.stringify(data.res.result));
+            console.log(data.res.result.data.sections);
+            setCompletionState(data.res.result.data.sections);
+            setIsLoading(false);
+          } catch {
+            console.log("error parsing response");
+            if (data.res.result && data.res.result.type === "error") {
+              toast.error(data.res.result.message);
+            } else {
+              toast.error("Error parsing response");
+            }
+            
+            setIsLoading(false);
+          }
         }
       }, 1000);
     } catch (e) {
       console.log(e);
       pollingIntervalRef.current = null;
+      toast.error("Error polling completion status");
       setIsLoading(false);
     }
   };
 
+
+  //called when user clicks on analyze button, calls api endpoint to start OPENAI completion as background job
   const getCompletion = async () => {
     setIsLoading(true);
-    setError(false);
     try {
       const response = await fetch("/api/getCompletion", {
         method: "POST",
@@ -185,26 +203,22 @@ const AnnotationPlayground = () => {
       const data = await response.json();
       console.log(data);
       executionIdRef.current = data.executionId;
-    
+
       startPolling(data);
     } catch (e) {
       console.log(e);
       pollingIntervalRef.current = null;
       setIsLoading(false);
-      setError(true);
+      toast.error("Error starting completion");
     }
   };
 
-  console.log("executionIdRef");
-  console.log(executionIdRef.current);
-
   return (
     <div className="flex w-full max-w-[1000px] relative">
-      
-      <div className="relative w-full  rounded-xl border p-10 pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
-        <div className="absolute w-full text-center -bottom-7 left-0 opacity-30 text-xs px-4 py-1">by using this playground, you acknowledge and agree that your submissions will be stored in a public database for research purposes</div>
+      <div className="relative w-full  rounded-xl border pt-20 p-7 lg:p-10 lg:pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
+        <div className="absolute w-full text-center -bottom-14 md:-bottom-7 left-0 opacity-30 text-xs px-4 py-1">by using this playground, you acknowledge and agree that your submissions will be stored in a public database for research purposes</div>
         {/*border svgs*/}
-        <div className="absolute p-10 pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10 d">
+        <div className="absolute p-6 pt-20 lg:p-10 lg:pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10 d">
           <div
             className={`w-full relative ${
               textAreaFocused ? "opacity-100" : "opacity-50"
@@ -216,7 +230,7 @@ const AnnotationPlayground = () => {
 
         {completionState ? (
           <div
-            className={`  w-full h-[80vh] max-h-[500px]  p-4 placeholder:font-medium`}
+            className={`  w-full overflow-scroll h-[80vh] max-h-[500px]  p-4 placeholder:font-medium`}
           >
             <AnnotatedText text={content} sections={completionState || []} />
           </div>
@@ -227,28 +241,22 @@ const AnnotationPlayground = () => {
               required
               onFocus={() => setTextAreaFocused(true)}
               onBlur={() => setTextAreaFocused(false)}
-              className={`resize-none w-full dark:text-white placeholder:dark:text-zinc-100 dark:bg-zinc-900 h-[80vh] placeholder:font-mono max-h-[500px]  p-4 placeholder:font-medium placeholder:opacity-50 focus:placeholder:opacity-100 placeholder:text-black focus:outline-none placeholder:text-lg ${
-                isLoading ? "animate-pulse" : ""
+              className={`resize-none w-full dark:text-white placeholder:dark:text-zinc-100 dark:bg-zinc-900 h-[80vh] placeholder:font-mono max-h-[500px]  p-2 lg:p-4  placeholder:font-medium placeholder:opacity-50 focus:placeholder:opacity-100 placeholder:text-black focus:outline-none lg:placeholder:text-lg ${
+                isLoading ? "animate-pulse-fast" : ""
               }`}
               autoFocus
               placeholder="Paste a page"
               content={content}
               onChange={(e) => setContent(e.target.value)}
             ></textarea>
-            <input
-              readOnly
-              className="hidden pointer-events-none"
-              name="model"
-              value={model}
-            ></input>
           </>
         )}
-
-        <div className="absolute flex w-full border-b dark:border-zinc-600 left-0 justify-between top-0  p-4 h-14 text-sm z-0 items-center">
+        
+        <div className="absolute flex w-full border-b dark:border-zinc-600 left-0 justify-between top-0 p-4 h-14 text-sm z-0 items-center">
           <div className="flex gap-2 items-center">
-            <h2 className="opacity-50 py-1">Text Analysis Playground</h2>
+            <h2 className="opacity-50 py-1 hidden sm:block">Text Analysis Playground</h2>
           </div>
-          
+
           {completionState ? ( //if form is submitted + annotation is shown
             <div className="flex gap-5">
               <button
@@ -407,7 +415,11 @@ const AnnotationPlayground = () => {
                   */}
                 </div>
               ) : null}
-              <SubmitButton content={content} pending={isLoading} getCompletion={getCompletion} />
+              <SubmitButton
+                content={content}
+                pending={isLoading}
+                getCompletion={getCompletion}
+              />
             </div>
           )}
         </div>

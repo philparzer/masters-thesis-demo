@@ -1,5 +1,7 @@
 "use client";
 
+//popover component for displaying annotations on click
+
 import {
   Popover,
   PopoverContent,
@@ -18,8 +20,6 @@ interface AnnotationPopoverProps {
 const AnnotationPopover = ({ phrase, description }: AnnotationPopoverProps) => {
   const [isHighlighted, setIsHighlighted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  
-  //add handler that checks if clicks anywhere else on the page and if so, set isHighlighted to false
 
   const ref = useOutsideClick(() => setIsOpen(false));
 

@@ -8,7 +8,7 @@ const TextAreaDecoration = ({isLoading}: TextAreaDecorationProps) => {
       <svg
         width="8"
         height="8"
-        className={` dark:stroke-white ${isLoading ? "animate-pulse" : ""}`}
+        className={` dark:stroke-white ${isLoading ? "animate-pulse-fast" : ""}`}
         viewBox="0 0 72 71"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

@@ -3,7 +3,7 @@
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
-
+//handles next-auth authentication
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,

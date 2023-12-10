@@ -1,3 +1,5 @@
+//component that splits text into segments to be annotated and segments without annotations
+
 import AnnotationPopover from "./annotation-popover";
 
 interface AnnotatedTextProps {

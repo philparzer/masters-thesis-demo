@@ -1,3 +1,5 @@
+//this is the openai schema used in the function call https://platform.openai.com/docs/guides/function-calling
+
 import { ChatCompletionCreateParams } from "openai/resources/chat/index";
 
 export const functions: ChatCompletionCreateParams.Function[] = [

@@ -1,8 +1,9 @@
 "use client"
 
+//component that displays a copy to clipboard button on hover, used to display example texts
+
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 interface ClipboardTextProps {
     text: string;
