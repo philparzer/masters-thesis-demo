@@ -397,7 +397,7 @@ const AnnotationPlayground = () => {
                   </div>
 
                   <Sheet onOpenChange={(open) => !open && setSettingsCookie()}>
-                    <SheetTrigger className="border rounded-md px-4 pr-3 py-1.5 sm:py-1 bg-white dark:bg-zinc-900 absolute sm:static sm:right-auto right-0 sm:translate-y-0 -translate-y-16 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
+                    <SheetTrigger className="border rounded-md px-4 dark:focus:outline-white pr-3 py-1.5 sm:py-1 bg-white dark:bg-zinc-900 absolute sm:static sm:right-auto right-0 sm:translate-y-0 -translate-y-16 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
                       <span className="flex gap-2 items-center">
                         settings
                         <svg
