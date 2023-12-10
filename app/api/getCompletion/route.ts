@@ -21,11 +21,17 @@ req: Request,
       return new NextResponse("ERROR 500: no text specified", {status: 500})
     }
 
+    if (!body.targetLanguage) {
+      return new NextResponse("ERROR 500: no target language specified", {status: 500})
+    }
+
+
+    const targetLanguage = body.targetLanguage;
     const model = body.model;
     const text = body.text;
 
     // calling a background function triggers an execution on Defer Platform
-    const deferExecutionID = await getCompletion({model, text});
+    const deferExecutionID = await getCompletion({model, text, targetLanguage});
 
     console.log("deferExecutionID", deferExecutionID)
     

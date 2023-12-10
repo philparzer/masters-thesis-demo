@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import AnnotatedText from "./annotated-text";
-import { modelSchema, models } from "@/lib/types";
+import { iso6391Code, modelSchema, models } from "@/lib/types";
 import { toast } from "sonner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import TextAreaDecoration from "./text-area-decoration";
+import { iso6391CodesAndNames } from "@/lib/utils";
 
 interface SubmitButtonInterface {
   content: string;
@@ -105,6 +106,7 @@ const AnnotationPlayground = () => {
   const pathname = usePathname();
   const [textAreaFocused, setTextAreaFocused] = useState(false);
   const [content, setContent] = useState("");
+  const [targetLanguage, setTargetLanguage] = useState<iso6391Code>("en"); //TODO: add language selection
   const executionIdRef = useRef(null);
   const pollingIntervalRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -175,7 +177,7 @@ const AnnotationPlayground = () => {
             } else {
               toast.error("Error parsing response");
             }
-            
+
             setIsLoading(false);
           }
         }
@@ -188,7 +190,6 @@ const AnnotationPlayground = () => {
     }
   };
 
-
   //called when user clicks on analyze button, calls api endpoint to start OPENAI completion as background job
   const getCompletion = async () => {
     setIsLoading(true);
@@ -198,7 +199,7 @@ const AnnotationPlayground = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: content, model: model }),
+        body: JSON.stringify({ text: content, model: model, targetLanguage: targetLanguage }),
       });
       const data = await response.json();
       console.log(data);
@@ -216,7 +217,10 @@ const AnnotationPlayground = () => {
   return (
     <div className="flex w-full max-w-[1000px] relative">
       <div className="relative w-full  rounded-xl border pt-20 p-7 lg:p-10 lg:pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
-        <div className="absolute w-full text-center -bottom-14 md:-bottom-7 left-0 opacity-30 text-xs px-4 py-1">by using this playground, you acknowledge and agree that your submissions will be stored in a public database for research purposes</div>
+        <div className="absolute w-full text-center -bottom-14 md:-bottom-7 left-0 opacity-30 text-xs px-4 py-1">
+          by using this playground, you acknowledge and agree that your
+          submissions will be stored in a public database for research purposes
+        </div>
         {/*border svgs*/}
         <div className="absolute p-6 pt-20 lg:p-10 lg:pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10 d">
           <div
@@ -251,10 +255,12 @@ const AnnotationPlayground = () => {
             ></textarea>
           </>
         )}
-        
+
         <div className="absolute flex w-full border-b dark:border-zinc-600 left-0 justify-between top-0 p-4 h-14 text-sm z-0 items-center">
           <div className="flex gap-2 items-center">
-            <h2 className="opacity-50 py-1 hidden sm:block">Text Analysis Playground</h2>
+            <h2 className="opacity-50 py-1 hidden sm:block">
+              Text Analysis Playground
+            </h2>
           </div>
 
           {completionState ? ( //if form is submitted + annotation is shown
@@ -266,6 +272,7 @@ const AnnotationPlayground = () => {
                   const outputObj = {
                     text: content,
                     analysis: jsonToSave,
+                    targetLanguage: targetLanguage,
                   };
                   const dataStr = JSON.stringify(outputObj, null, 2); // Convert to JSON string with pretty print
                   const blob = new Blob([dataStr], {
@@ -273,7 +280,7 @@ const AnnotationPlayground = () => {
                   });
                   const url = URL.createObjectURL(blob);
                   const link = document.createElement("a");
-                  link.download = "sections.json";
+                  link.download = "analysis.json";
                   link.href = url;
                   link.click();
                   URL.revokeObjectURL(url); // Clean up
@@ -346,6 +353,33 @@ const AnnotationPlayground = () => {
                             GPT-4 Turbo 1106
                           </SelectItem>
                         </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] absolute -translate-y-10"></label>
+                    <Select
+                      value={targetLanguage}
+                      onValueChange={(targetLanguage) =>
+                        setTargetLanguage(targetLanguage as iso6391Code)
+                      }
+                    >
+                      <SelectTrigger className="">
+                        <SelectValue>{targetLanguage}</SelectValue>
+                      </SelectTrigger>
+                      <SelectContent defaultValue="en" className=" pt-3 " >
+                        
+                        <label className="sticky z-10 px-8 top-0 text-black/50 dark:text-white/50 text-xs mt-1 font-medium w-full flex pt-4 pb-2 -translate-y-2 bg-white dark:bg-zinc-900 ">
+                          <p className=" ">Translation Target Language</p>
+                        </label>
+                        {iso6391CodesAndNames.map((language) => (
+                          <SelectItem
+                            value={language.code}
+                            className="text-center w-full"
+                          >
+                            {language.code} - {language.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>

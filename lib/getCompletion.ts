@@ -18,14 +18,16 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl as string, supabaseAnonKey as string);
 
-import { modelSchema } from "@/lib/types";
+import { iso6391Code, modelSchema } from "@/lib/types";
 
 export default async function analyzeText({
   model,
   text,
+  targetLanguage,
 }: {
   model: string;
   text: string;
+  targetLanguage?: iso6391Code;
 }) {
   const isValidModelChoice = modelSchema.safeParse(model as string);
 
@@ -56,7 +58,7 @@ export default async function analyzeText({
       messages: [
         {
           role: "system",
-          content: `Always call the function analyze_text_for_translation, always return JSON! You analyze the text as a translator would, considering hard to translate parts of the text. The descriptions should be in English and concise, no need for full sentences. The target group of this function is translators, so terminology specific to linguistics and translation studies can be used. Return each phrase only once. Return only the phrases that are hard, not entire sentences, unless the entire sentence is hard to translate. Don't attempt to translate the phrase. Explain why it's hard, and what makes it hard to translate. Include possible pitfalls for machine translation systems if applicable.`,
+          content: `Always call the function analyze_text_for_translation, always return JSON! You analyze the text as a translator would, considering hard to translate parts of the text. The user wants to translate this text to ${targetLanguage} (ISO 639-1); when relevant try to incorporate language specific information. The descriptions should be in English and concise, no need for full sentences. The target group of this function is translators, so terminology specific to linguistics and translation studies can be used. Return each phrase only once. Return only the phrases that are hard, not entire sentences, unless the entire sentence is hard to translate. Don't attempt to translate the phrase. Explain why it's hard, and what makes it hard to translate. Include possible pitfalls for machine translation systems if applicable.`,
         },
         { role: "user", content: text },
       ],
@@ -136,7 +138,7 @@ export default async function analyzeText({
     console.log("saving data")
     const { data, error } = await supabase
       .from("completions")
-      .insert([{ model, language, execution_time: executionTime, api_response: completion }]);
+      .insert([{ model, source_language: language, execution_time: executionTime, api_response: completion, target_language: targetLanguage }]);
 
     if (error) throw error;
     console.log("saved", data);
