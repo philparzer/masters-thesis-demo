@@ -311,7 +311,10 @@ const AnnotationPlayground = () => {
                   e.preventDefault();
                   const outputObj = {
                     text: content,
-                    analysis: jsonToSave,
+                    sections: jsonToSave,
+                    temperature: temperature,
+                    systemPrompt: systemPrompt,
+                    functionCallDescription: functionCallDescription,
                   };
                   const dataStr = JSON.stringify(outputObj, null, 2); // Convert to JSON string with pretty print
                   const blob = new Blob([dataStr], {
@@ -319,7 +322,7 @@ const AnnotationPlayground = () => {
                   });
                   const url = URL.createObjectURL(blob);
                   const link = document.createElement("a");
-                  link.download = "sections.json";
+                  link.download = "llm-text-analysis.json";
                   link.href = url;
                   link.click();
                   URL.revokeObjectURL(url); // Clean up
