@@ -40,7 +40,7 @@ req: Request,
     const text = body.text;
 
     // calling a background function triggers an execution on Defer Platform
-    const deferExecutionID = await getCompletion({model, text});
+    const deferExecutionID = await getCompletion({model, text, temperature, systemPrompt, functionCallDescription});
 
     console.log("deferExecutionID", deferExecutionID)
     
