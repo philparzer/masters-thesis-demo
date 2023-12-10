@@ -3,20 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import AnnotatedText from "./annotated-text";
 import { modelSchema, models } from "@/lib/types";
-import {
-  defaultFunctionCallDescription,
-  defaultSystemPrompt,
-  defaultTemperature,
-} from "@/lib/api-data";
-import { toast } from "sonner"; //TODO: use sonner instead of error state
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { toast } from "sonner"; //TODO: use sonner instead of error state and implement
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Select,
@@ -27,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import TextAreaDecoration from "./text-area-decoration";
 
 interface SubmitButtonInterface {
   content: string;
@@ -212,7 +200,9 @@ const AnnotationPlayground = () => {
 
   return (
     <div className="flex w-full max-w-[1000px] relative">
+      
       <div className="relative w-full  rounded-xl border p-10 pt-20 pb-10 flex bg-white dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-100">
+        <div className="absolute w-full text-center -bottom-7 left-0 opacity-30 text-xs px-4 py-1">by using this playground, you acknowledge and agree that your submissions will be stored in a public database for research purposes</div>
         {/*border svgs*/}
         <div className="absolute p-10 pt-20 pb-10 left-0 top-0 h-full w-full flex pointer-events-none justify-between z-10 d">
           <div
@@ -220,110 +210,7 @@ const AnnotationPlayground = () => {
               textAreaFocused ? "opacity-100" : "opacity-50"
             }`}
           >
-            <svg
-              width="8"
-              height="8"
-              className={` dark:stroke-white ${
-                isLoading ? "animate-pulse" : ""
-              }`}
-              viewBox="0 0 72 71"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="0.874634"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                className="dark:fill-white fill-black"
-              />
-              <rect
-                x="11.5607"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                transform="rotate(90 11.5607 0.539673)"
-                className="dark:fill-white fill-black"
-              />
-            </svg>
-            <svg
-              className={`right-0 absolute top-0 scale-x-[-1] ${
-                isLoading ? "animate-pulse" : ""
-              }`}
-              width="8"
-              height="8"
-              viewBox="0 0 72 71"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="0.874634"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                className="dark:fill-white fill-black"
-              />
-              <rect
-                x="11.5607"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                transform="rotate(90 11.5607 0.539673)"
-                className="dark:fill-white fill-black"
-              />
-            </svg>
-            <svg
-              className={`bottom-0 absolute scale-y-[-1] ${
-                isLoading ? "animate-pulse" : ""
-              }`}
-              width="8"
-              height="8"
-              viewBox="0 0 72 71"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="0.874634"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                className="dark:fill-white fill-black"
-              />
-              <rect
-                x="11.5607"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                transform="rotate(90 11.5607 0.539673)"
-                className="dark:fill-white fill-black"
-              />
-            </svg>
-            <svg
-              className={`bottom-0 right-0 absolute scale-y-[-1] scale-x-[-1] ${
-                isLoading ? "animate-pulse" : ""
-              }`}
-              width="8"
-              height="8"
-              viewBox="0 0 72 71"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect
-                x="0.874634"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                className="dark:fill-white fill-black"
-              />
-              <rect
-                x="11.5607"
-                y="0.539673"
-                width="70.2224"
-                height="10.686"
-                transform="rotate(90 11.5607 0.539673)"
-                className="dark:fill-white fill-black"
-              />
-            </svg>
+            <TextAreaDecoration isLoading={isLoading} />
           </div>
         </div>
 
@@ -358,10 +245,10 @@ const AnnotationPlayground = () => {
         )}
 
         <div className="absolute flex w-full border-b dark:border-zinc-600 left-0 justify-between top-0  p-4 h-14 text-sm z-0 items-center">
-          <div className="flex gap-10 items-center">
+          <div className="flex gap-2 items-center">
             <h2 className="opacity-50 py-1">Text Analysis Playground</h2>
           </div>
-          {/*submit button or trash button*/}
+          
           {completionState ? ( //if form is submitted + annotation is shown
             <div className="flex gap-5">
               <button
@@ -455,6 +342,8 @@ const AnnotationPlayground = () => {
                     </Select>
                   </div>
 
+                  {/* //TODO: maybe add prompt and function editing later on
+                  
                   <Sheet>
                     <SheetTrigger className="border rounded-md px-4 py-1 text-sm focus:outline outline-2 focus:outline-black dark:border-zinc-600 ">
                       settings
@@ -513,7 +402,9 @@ const AnnotationPlayground = () => {
                         />
                       </div>
                     </SheetContent>
-                  </Sheet>
+                  </Sheet> 
+                  
+                  */}
                 </div>
               ) : null}
               <SubmitButton content={content} pending={isLoading} getCompletion={getCompletion} />
