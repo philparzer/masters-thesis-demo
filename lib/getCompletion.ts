@@ -171,7 +171,7 @@ export default async function analyzeText({
     console.log("saving data")
     const { data, error } = await supabase
       .from("completions")
-      .insert([{ model, language, execution_time: executionTime, api_response: completion, input_text: text, function_call_description: functionCallDescription, system_prompt: systemPrompt, temperature }]);
+      .insert([{ model, source_language: language, execution_time: executionTime, api_response: completion, input_text: text, function_call_description: functionCallDescription, system_prompt: systemPrompt, temperature }]);
 
     if (error) throw error;
     console.log("saved", data);
