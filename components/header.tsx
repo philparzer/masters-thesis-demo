@@ -27,7 +27,7 @@ const Header = () => {
           translators can focus on translation problems and spend less time
           post-editing standard language.
         </span>{" "}
-        The system outlined uses OpenAI's function-calling API.
+        The system outlined uses OpenAI&apos;s function-calling API.
       </p>
     </>
   );
