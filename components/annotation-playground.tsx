@@ -135,7 +135,7 @@ const AnnotationPlayground = () => {
   const [model, setModel] = useState<models>(
     modelSchema.safeParse(searchParams.get("model")).success
       ? (searchParams.get("model") as models)
-      : "gpt-4-0613"
+      : "gpt-4-turbo"
   );
 
   //handles query params (getting/setting model)
@@ -316,7 +316,7 @@ const AnnotationPlayground = () => {
                     systemPrompt: systemPrompt,
                     functionCallDescription: functionCallDescription,
                   };
-                  const dataStr = JSON.stringify(outputObj, null, 2); // Convert to JSON string with pretty print
+                  const dataStr = JSON.stringify(outputObj, null, 2); // Convert to JSON string with pretty print 
                   const blob = new Blob([dataStr], {
                     type: "application/json",
                   });
@@ -380,10 +380,7 @@ const AnnotationPlayground = () => {
                               Stable Models
                             </div>
                           </SelectLabel>
-                          <SelectItem value="gpt-4-0613">GPT-4 0631</SelectItem>
-                          <SelectItem value="gpt-3.5-turbo-1106">
-                            GPT-3.5 Turbo 1106
-                          </SelectItem>
+                          <SelectItem value="gpt-4-turbo">GPT-4-Turbo</SelectItem>
                         </SelectGroup>
                         <SelectGroup>
                           <SelectLabel>
@@ -391,8 +388,8 @@ const AnnotationPlayground = () => {
                               Preview Models
                             </div>
                           </SelectLabel>
-                          <SelectItem value="gpt-4-1106-preview">
-                            GPT-4 Turbo 1106
+                          <SelectItem value="gpt-3.5-turbo-0125">
+                            GPT-3.5 Turbo 1106
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
