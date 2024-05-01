@@ -39,7 +39,7 @@ interface SubmitButtonInterface {
   getCompletion: () => void;
 }
 
-const maxCharCount = 1800;
+const maxCharCount = 3000; //roughly 1.5 pages
 
 const SubmitButton = ({
   content,
@@ -309,9 +309,10 @@ const AnnotationPlayground = () => {
                 className="text-black  rounded-md underline opacity-50 underline-offset-2 decoration-2 decoration-black/50 dark:decoration-white/50 hover:opacity-100"
                 onClick={(e) => {
                   e.preventDefault();
+                  const sections = JSON.parse(jsonToSave!);
                   const outputObj = {
                     text: content,
-                    sections: jsonToSave,
+                    sections: sections.data.sections,
                     temperature: temperature,
                     systemPrompt: systemPrompt,
                     functionCallDescription: functionCallDescription,
@@ -322,7 +323,7 @@ const AnnotationPlayground = () => {
                   });
                   const url = URL.createObjectURL(blob);
                   const link = document.createElement("a");
-                  link.download = "llm-text-analysis.json";
+                  link.download = `${JSON.parse(jsonToSave!).data.source_language}-${new Date().toLocaleTimeString().replace(" ", "-")}-llm-text-analysis.json`;
                   link.href = url;
                   link.click();
                   URL.revokeObjectURL(url); // Clean up

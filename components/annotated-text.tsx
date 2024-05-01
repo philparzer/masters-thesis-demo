@@ -26,7 +26,7 @@ export default function AnnotatedText({ text, sections }: AnnotatedTextProps) {
 
     // Iterate over each section to find all occurrences of its phrase
     sections.forEach((section) => {
-      let start = text.indexOf(section.phrase);
+      let start = text.toLowerCase().indexOf(section.phrase.toLowerCase()); //cast to lowercase for case-insensitive search -> sometimes llm outputs uppercase
       // Continue finding occurrences until there are no more
       while (start > -1) {
         occurrences.push({
