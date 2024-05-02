@@ -1,3 +1,6 @@
+> [!WARNING]
+> defer.run - the saas I used for background jobs is shutting down, this needs to be replaced with a new solution
+
 # LLM-based Text Analysis for Translation of Literary Texts
 
 This repository contains the <a href="https://llm-text-analysis.vercel.app/"> demo showcase</a> of the system outlined in the paper <em>LLM-based Text Analysis for Translation of Literary Texts</em>. 

@@ -14,9 +14,9 @@ const TextSections = ({}: TextSectionsProps) => {
         <p className="mb-6 lg:mb-12 text-justify">
           The texts provided below have been used to evaluate the efficacy of
           this tool in the paper. It&apos;s important to note that the
-          paper&apos;s focus on Russian presents an insightful yet limited
+          paper&apos;s focus on Russian and German literary texts presents an insightful yet limited
           perspective that highlights the need for expanded research to
-          encompass a broader range of language pairs.
+          encompass a broader range of language pairs, genres, etc.
         </p>
         <div className="flex flex-col gap-14 lg:px-5">
           <ClipboardText
@@ -24,15 +24,72 @@ const TextSections = ({}: TextSectionsProps) => {
             language="Russian"
             author="Viktor Pelevin"
             title="Spi"
+            link="http://pelevin.nov.ru/rass/pe-spi/1.html"
             page={1}
           />
 
           <ClipboardText
-            text={`Марта 25 числа случилось в Петербурге необыкновенно странное происшествие. Цирюльник Иван Яковлевич, живущий на Вознесенском проспекте (фамилия его утрачена, и даже на вывеске его — где изображен господин с намыленною щекою и надписью: «И кровь отворяют» — не выставлено ничего более), цирюльник Иван Яковлевич проснулся довольно рано и услышал запах горячего хлеба. Приподнявшись немного на кровати, он увидел, что супруга его, довольно почтенная дама, очень любившая пить кофий, вынимала из печи только что испеченные хлебы. — Сегодня я, Прасковья Осиповна, не буду пить кофию, — сказал Иван Яковлевич, — а вместо того хочется мне съесть горячего хлебца с луком. (То есть Иван Яковлевич хотел бы и того и другого, но знал, что было совершенно невозможно требовать двух вещей разом, ибо Прасковья Осиповна очень не любила таких прихотей.) «Пусть дурак ест хлеб; мне же лучше, — подумала про себя супруга, — останется кофию лишняя порция». И бросила один хлеб на стол.`}
+            text={`Вместо предисловия
+
+            В окошке железной раскаленной будки сатанело лицо билетерши. Оно было маслянистым и пузырчатым, как доведенный до совершенства блин на сковороде. К блину устремилась змейка из робких граждан, мечтающих взять билет на ближайший «Омик» — ржавый речной теплоходик постройки семидесятых годов. Следующий «Омик» отходил от пристани только через полтора часа, а значит, неуспевшим грозили либо солнечный удар на городском пляже без зонтиков, либо глубокий обморок в здании речного вокзала без кондиционеров. 
+            В этой очереди я была последней. Волосы мои, еще в аэропорту развеиваемые сплит-системами, ныне прилипли ко лбу и шее, истекая солеными струями. Платье-футляр из хлопка пропиталось потом и словно подшил латекс подробно обтягивало формы. Босоножки на шпильке и тонких лямках отделились от влажных стоп и жили своей развязной жизнью. Кожаный шопер натер плечо и стремился на свободу — к бастующим туфлям. Очевидно, лук и макияж не соответствовали атмосфере кипящей набережной. По сравнению со мной старухи, прожженные солнцем, в свободных рубахах и бездонных юбках, с бидонами и холщовыми сумками, казались гораздо более уместными, органичными и производили впечатление людей, ладящих с собственными головами.
+            
+            Наконец подошла очередь.
+            — Вы принимаете карты? — спросила я билетершу, с трудом елозя во рту сухим языком.
+            — Ополоумела, курва? — взвизгнула огненная тетка. — Ты здесь хоть одну розетку видишь? Только наличные.
+            — Сколько стоит билет?
+            — Тариф на стене, — буркнула она, утирая капли с блинного лица.
+            На выкрашенной в лазурь будке действительно висел тетрадный лист, разлинованный и исписанный от руки. Буквы выгорели.
+            
+            Поднимая и приспуская очки, я пыталась найти нужную строчку.
+            — До отправления две минуты. Куда надо?
+            — Остров Рафаила.
+            — Семьдесят два рубля пятьдесят копеек.
+            
+            Я протянула стольник, радуясь, что в кошельке были хоть какие-то купюры. Билетерша загремела мелочью в жестяной банке, отсчитывая сдачу.
+            — Боже, не надо! — взмолилась я.
+            — Боже тебе ничего не даст, — пробурчала она, отрывая билет от толстого рулона.`}
             language="Russian"
-            author="Nikolai Gogol"
-            title="The Nose"
-            page={1}
+            author="Katya Kachur"
+            title="Gen Rafaila"
+            link="https://eksmo.ru/book/gen-rafaila-ITD1321105/"
+            page={[5, 6]}
+          />
+          <ClipboardText
+            text={`Pierre Anthon verließ an dem Tag die Schule, als er herausfand, dass nichts etwas bedeutete und es sich deshalb nicht lohnte, irgendwas zu tun.
+            Wir anderen blieben.
+            Und auch wenn die Lehrer sich bemühten, rasch hinter ihm aufzuräumen – sowohl im Klassenzimmer als auch in unseren Köpfen –, so blieb doch ein bisschen von Pierre Anthon in uns hängen. Vielleicht kam deshalb alles so, wie es kam.
+            Es war in der zweiten Augustwoche. Die Sonne brannte und machte uns faul und leicht reizbar, der Asphalt klebte an den Sohlen unserer Turnschuhe, und die Äpfel und Birnen waren gerade eben so reif, dass sie perfekt als Wurfgeschoss in der Hand lagen. Wir schauten weder links noch rechts. Der erste Schultag nach den Sommerferien. Das Klassenzimmer roch nach Reinigungsmitteln und langem Leerstehen, die Fensterscheiben warfen gestochen scharfe Spiegelbilder, und an der Tafel hing kein Kreidestaub. Die Tische standen in Zweierreihen so gerade wie Krankenhausflure und wie sie es nur an ebendiesem einen Tag im Jahr tun. Klasse 7A.
+            Wir gingen zu unseren Plätzen, ohne uns über die vorgegebene Ordnung aufzuregen.
+            Kommt Zeit, kommt Rat, kommt Unordnung. Aber nicht heute!
+            Eskildsen begrüßte uns mit demselben Witz wie in jedem Jahr.
+            
+            „Kinder, freut euch über den heutigen Tag“, sagte er. „Ohne Schule gäbe es auch keine Ferien.“
+            
+            Wir lachten. Nicht, weil wir das witzig fanden, sondern weil er es sagte.
+            
+            Genau da stand Pierre Anthon auf.
+            „Nichts bedeutet irgendetwas“, sagte er. „Das weiß ich schon lange. Deshalb lohnt es sich nicht, irgendetwas zu tun. Das habe ich gerade herausgefunden.“ Ganz ruhig bückte er sich und packte die Sachen, die er gerade herausgenommen hatte, wieder in seine Tasche. Mit gleichgültiger Miene nickte er uns zum Abschied zu und ging hinaus, ohne die Tür hinter sich zu schließen.
+            `}
+            language="German"
+            author="Janne Teller"
+            title="Nichts. Was im Leben wichtig ist"
+            page={[8, 10]}
+            link={"https://www.carlsen.de/hardcover/nichts-was-im-leben-wichtig-ist/9783551581671"}
+          />
+           <ClipboardText
+            text={`Hafermilch, Mandelmilch, Cashewmus, tiefgefrorene Himbeeren, Hummus, Kölln Haferflocken, Chiasamen, Bananen, Dinkelnudeln, Avocado, Avocado, Avocado. Ich spiele: Ich darf nicht hochschauen. Circa 30, männlich, schlaksig, rahmenlose Brille, Levi’s-Shirt, rate ich, sage »30,72 Euro«, schaue endlich hoch, und als ich den Levi’s-Schriftzug sehe, ist das ziemlich cool und vielleicht sogar der bisherige Höhepunkt meines Tages. Es ist zwar eine jüngere Frau, aber das T-Shirt richtig zu erraten ist schon stark.
+            4 Stunden später lege ich die Gut&Günstig-Variante von Mirácoli-Nudeln, Gut&Günstig-Haferflocken, Dr. Oetker Bourbon-Vanillesoße und Vollmilch auf das Band. »4,06 Euro«, sagt Frau Bach, ich zahle, stopfe die Sachen in meinen Rucksack und renne zum Bahnhof.
+            
+            Straßenbahn, Uni, Übungsaufgaben und Texte kopieren. Ich habe einen strikten Zeitplan, in den ein in 3 von 4 Fällen nicht funktionierender Kopierer einfach nicht reinpasst. »Papierstau«. Ich spüre, wie sich beim Anblick dieses Wortes die Wut in mir aufstaut, balle die Fäuste und starre diesen weißen, doofen Klotz an. Zerstörungswut.
+            
+            Straßenbahn, Übungsaufgaben lösen, Schwimmen, Ida. Der Übungszettel ist machbar, und ich schaffe es, alle Aufgaben während der 69-minütigen Fahrt von der Uni zum Schwimmbad zu lösen. Ich atme den Chlorgeruch tief ein, schmeiße meinen Rucksack auf die Bank neben Ursulas bunten Korb, ziehe das Kleid über meinen Kopf, springe kopfüber ins Wasser, tauche in den tiefen Bereich bis zum Grund, setze mich auf den Boden und schaue mir das Geschehen im Becken von unten an. Viele unkoordiniert zappelnde Kinderbeine, ein paar mehr oder weniger koordiniert zappelnde Seniorenbeine, tauchende Kinderkörper, gemischte Beine am Beckenrand. Insgesamt sieht das Zusammenspiel dieser vielen Bewegungen nach Spaß aus, sofern ich das von hier unten beurteilen kann. Ich stoße mich vom Boden ab, um wie immer meine 22 Bahnen zu schwimmen, und als ich bei der 20. oder 22. Bahn nicht sicher bin, ob es die 20. oder 22. ist, ärgere ich mich und schwimme zur Bestrafung noch 5 zusätzliche Bahnen.            
+            `}
+            language="German"
+            author="Caroline Wahl"
+            title="22 Bahnen"
+            page={[9, 10]}
+            link={"https://www.amazon.de/Bahnen-Nominiert-Lieblingsbuch-unabh%C3%A4ngigen-Buchhandels/dp/3832168036"}
           />
 
           <p className="text-justify">
@@ -41,13 +98,17 @@ const TextSections = ({}: TextSectionsProps) => {
         </div>
       </section>
       <section className="mt-20">
-        <h2 className="text-xl lg:text-2xl dark:text-white font-semibold mb-2 lg:mb-4">Prompts</h2>
+        <h2 className="text-xl lg:text-2xl dark:text-white font-semibold mb-2 lg:mb-4">
+          Prompts
+        </h2>
         <p className="text-justify">
           <span className="text-red-500 opacity-50">section coming soon</span>
         </p>
       </section>
       <section className="mt-20">
-        <h2 className="text-xl lg:text-2xl dark:text-white font-semibold mb-2 lg:mb-4">The Paper</h2>
+        <h2 className="text-xl lg:text-2xl dark:text-white font-semibold mb-2 lg:mb-4">
+          The Paper
+        </h2>
         <p className="text-justify">
           <span className="text-red-500 opacity-50">section coming soon</span>
         </p>

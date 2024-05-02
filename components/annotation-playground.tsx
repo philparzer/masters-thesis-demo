@@ -31,7 +31,6 @@ import {
   defaultTemperature,
 } from "@/lib/api-data";
 import { setCookie, getCookie } from "cookies-next";
-import { get } from "http";
 
 interface SubmitButtonInterface {
   content: string;

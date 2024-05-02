@@ -9,11 +9,12 @@ interface ClipboardTextProps {
     text: string;
     author: string;
     title: string;
-    page: number;
+    page: number | [number, number];
     language: string;
+    link: string;
 }
 
-const ClipboardText = ({text, author, title, page, language}: ClipboardTextProps) => {
+const ClipboardText = ({text, author, title, link, page, language}: ClipboardTextProps) => {
     
     const [isHovering, setIsHovering] = useState(false);
     const [hasClicked, setHasClicked] = useState(false);
@@ -43,7 +44,7 @@ const ClipboardText = ({text, author, title, page, language}: ClipboardTextProps
         </div>
         : null }
         </div>
-        <div className="text-left mt-4 text-sm">{language}, {author}, {title}, page {page}</div>
+        <a href={link} target="_blank" rel="noopener noreferrer" className="underline opacity-50 hover:opacity-100 text-left mt-4 block text-sm">{language}, {author}, {title}, {Array.isArray(page) ? `pp. ${page[0]}-${page[1]}` : `p. ${page}`}</a>
         </div>
     );
 }
