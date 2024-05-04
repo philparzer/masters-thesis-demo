@@ -14,13 +14,17 @@ const TextSections = ({}: TextSectionsProps) => {
         <p className="mb-6 lg:mb-12 text-justify">
           The texts provided below have been used to evaluate the efficacy of
           this tool in the paper. It&apos;s important to note that the
-          paper&apos;s focus on Russian and German literary texts presents an insightful yet limited
-          perspective that highlights the need for expanded research to
-          encompass a broader range of language pairs, genres, etc.
+          paper&apos;s focus on Russian and German literary texts presents an
+          insightful yet limited perspective that highlights the need for
+          expanded research to encompass a broader range of language pairs,
+          genres, etc.
         </p>
         <div className="flex flex-col gap-14 lg:px-5">
           <ClipboardText
-            text={`В самом начале третьего семестра, на одной из лекций по эмэл философии, Никита Сонечкин сделал одно удивительное открытие. Дело было в том, что с некоторых пор с ним творилось непонятное: стоило маленькому ушастому доценту, похожему из одолеваемого кощунственными мыслями попика, войти в аудиторию, как Никиту начинало смертельно клонить в сон. А когда доцент принимался говорить и показывать пальцем в люстру, Никита уже ничего не мог с собой поделать — он засыпал. Ему чудилось, что лектор говорит не о философии, а о чем-то из детства: о каких-то чердаках, песочницах и горящих помойках, потом ручка в Никитиных пальцах забиралась по диагонали в самый верх листа, оставив за собой неразборчивую фразу, наконец он клевал носом и проваливался в черноту, откуда через секунду-другую выныривал, чтобы вскоре все повторилось в той же самой последовательности. Его конспекты выглядели странно и были непригодны для занятий: короткие абзацы текста пересекались длинными косыми предложениями, где речь шла то о космонавтах-невозвращенцах, то о рабочем визите монгольского хана, а почерк становился мелким и прыгающим.`}
+            text={`В самом начале третьего семестра, на одной из лекций по эмэл философии, Никита Сонечкин сделал одно удивительное открытие.
+            Дело было в том, что с некоторых пор с ним творилось непонятное: стоило маленькому ушастому доценту, похожему из одолеваемого кощунственными мыслями попика, войти в аудиторию, как Никиту начинало смертельно клонить в сон. А когда доцент принимался говорить и показывать пальцем в люстру, Никита уже ничего не мог с собой поделать — он засыпал. Ему чудилось, что лектор говорит не о философии, а о чем-то из детства: о каких-то чердаках, песочницах и горящих помойках, потом ручка в Никитиных пальцах забиралась по диагонали в самый верх листа, оставив за собой неразборчивую фразу, наконец он клевал носом и проваливался в черноту, откуда через секунду-другую выныривал, чтобы вскоре все повторилось в той же самой последовательности. Его конспекты выглядели странно и были непригодны для занятий: короткие абзацы текста пересекались длинными косыми предложениями, где речь шла то о космонавтах-невозвращенцах, то о рабочем визите монгольского хана, а почерк становился мелким и прыгающим.
+            Сначала Никита очень расстраивался из-за своей неспособности нормально высидеть лекцию, а потом задумался: неужели это происходит только с ним? Он стал приглядываться к остальным студентам, и здесь-то его ждало открытие.
+            Оказалось, что спят вокруг почти все, но делают это гораздо умнее, чем он, - уперев лоб в раскрытую ладонь, так что лицо оказывалось спрятанным. Кисть правой руки при этом скрывались за локтем левой, и разобрать, пишет сидящий или нет, было нельзя. Никита попробовал принять это положение и обнаружил, что сразу же изменилось качество его сна. Если раньше он рывками перемещался от полной отключенности до перепуганного бодрствования, то теперь эти два состояния соединились — он засыпал, но не окончательно, не до черноты, и то, что с ним происходило, напоминало утреннюю дрему, когда любая мысль без труда превращается в движущуюся цветную картинку, следя за которой можно одновременно дожидаться звонка переведенного на час вперед будильника.`}
             language="Russian"
             author="Viktor Pelevin"
             title="Spi"
@@ -75,9 +79,11 @@ const TextSections = ({}: TextSectionsProps) => {
             author="Janne Teller"
             title="Nichts. Was im Leben wichtig ist"
             page={[8, 10]}
-            link={"https://www.carlsen.de/hardcover/nichts-was-im-leben-wichtig-ist/9783551581671"}
+            link={
+              "https://www.carlsen.de/hardcover/nichts-was-im-leben-wichtig-ist/9783551581671"
+            }
           />
-           <ClipboardText
+          <ClipboardText
             text={`Hafermilch, Mandelmilch, Cashewmus, tiefgefrorene Himbeeren, Hummus, Kölln Haferflocken, Chiasamen, Bananen, Dinkelnudeln, Avocado, Avocado, Avocado. Ich spiele: Ich darf nicht hochschauen. Circa 30, männlich, schlaksig, rahmenlose Brille, Levi’s-Shirt, rate ich, sage »30,72 Euro«, schaue endlich hoch, und als ich den Levi’s-Schriftzug sehe, ist das ziemlich cool und vielleicht sogar der bisherige Höhepunkt meines Tages. Es ist zwar eine jüngere Frau, aber das T-Shirt richtig zu erraten ist schon stark.
             4 Stunden später lege ich die Gut&Günstig-Variante von Mirácoli-Nudeln, Gut&Günstig-Haferflocken, Dr. Oetker Bourbon-Vanillesoße und Vollmilch auf das Band. »4,06 Euro«, sagt Frau Bach, ich zahle, stopfe die Sachen in meinen Rucksack und renne zum Bahnhof.
             
@@ -89,7 +95,9 @@ const TextSections = ({}: TextSectionsProps) => {
             author="Caroline Wahl"
             title="22 Bahnen"
             page={[9, 10]}
-            link={"https://www.amazon.de/Bahnen-Nominiert-Lieblingsbuch-unabh%C3%A4ngigen-Buchhandels/dp/3832168036"}
+            link={
+              "https://www.amazon.de/Bahnen-Nominiert-Lieblingsbuch-unabh%C3%A4ngigen-Buchhandels/dp/3832168036"
+            }
           />
 
           <p className="text-justify">
